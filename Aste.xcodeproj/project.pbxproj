@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		82BC8CE9DCC46F8D9AB23B1C /* libPods-Aste.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 959614C8727D11B5A74CF95C /* libPods-Aste.a */; };
+		D14A5B6C1DD26AFD00226EE3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */; };
 		D15BEC5D1DD2608C00E58050 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */; };
 		D15BEC5F1DD2608C00E58050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BEC5E1DD2608C00E58050 /* ViewController.swift */; };
 		D15BEC621DD2608C00E58050 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D15BEC601DD2608C00E58050 /* Main.storyboard */; };
@@ -15,6 +17,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.debug.xcconfig"; sourceTree = "<group>"; };
+		959614C8727D11B5A74CF95C /* libPods-Aste.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Aste.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D15BEC591DD2608C00E58050 /* Aste.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aste.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D15BEC5E1DD2608C00E58050 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +27,7 @@
 		D15BEC631DD2608C00E58050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D15BEC661DD2608C00E58050 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D15BEC681DD2608C00E58050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DC6ECA265D98731CFDD84501 /* Pods-Aste.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.release.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +35,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82BC8CE9DCC46F8D9AB23B1C /* libPods-Aste.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09A09251967ED59F87EB192B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */,
+				DC6ECA265D98731CFDD84501 /* Pods-Aste.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		D15BEC501DD2608B00E58050 = {
 			isa = PBXGroup;
 			children = (
 				D15BEC5B1DD2608C00E58050 /* Aste */,
 				D15BEC5A1DD2608C00E58050 /* Products */,
+				09A09251967ED59F87EB192B /* Pods */,
+				E0731DB3F67855CB43BA41F5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,8 +78,17 @@
 				D15BEC631DD2608C00E58050 /* Assets.xcassets */,
 				D15BEC651DD2608C00E58050 /* LaunchScreen.storyboard */,
 				D15BEC681DD2608C00E58050 /* Info.plist */,
+				D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */,
 			);
 			path = Aste;
+			sourceTree = "<group>";
+		};
+		E0731DB3F67855CB43BA41F5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				959614C8727D11B5A74CF95C /* libPods-Aste.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +98,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D15BEC6B1DD2608C00E58050 /* Build configuration list for PBXNativeTarget "Aste" */;
 			buildPhases = (
+				0653CE5983DCCCAD3A8DA825 /* Check Pods Manifest.lock */,
 				D15BEC551DD2608C00E58050 /* Sources */,
 				D15BEC561DD2608C00E58050 /* Frameworks */,
 				D15BEC571DD2608C00E58050 /* Resources */,
+				3735C163928F3B7CE93AFE10 /* Embed Pods Frameworks */,
+				966FDC2404F35DA95877A2AC /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -125,12 +155,61 @@
 			buildActionMask = 2147483647;
 			files = (
 				D15BEC671DD2608C00E58050 /* LaunchScreen.storyboard in Resources */,
+				D14A5B6C1DD26AFD00226EE3 /* GoogleService-Info.plist in Resources */,
 				D15BEC641DD2608C00E58050 /* Assets.xcassets in Resources */,
 				D15BEC621DD2608C00E58050 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0653CE5983DCCCAD3A8DA825 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		3735C163928F3B7CE93AFE10 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Aste/Pods-Aste-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		966FDC2404F35DA95877A2AC /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Aste/Pods-Aste-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D15BEC551DD2608C00E58050 /* Sources */ = {
@@ -259,6 +338,7 @@
 		};
 		D15BEC6C1DD2608C00E58050 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = FBBFZNEHZV;
@@ -272,6 +352,7 @@
 		};
 		D15BEC6D1DD2608C00E58050 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DC6ECA265D98731CFDD84501 /* Pods-Aste.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = FBBFZNEHZV;
@@ -302,6 +383,7 @@
 				D15BEC6D1DD2608C00E58050 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
