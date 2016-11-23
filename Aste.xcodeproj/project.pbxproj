@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		82BC8CE9DCC46F8D9AB23B1C /* libPods-Aste.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 959614C8727D11B5A74CF95C /* libPods-Aste.a */; };
+		4D44EB750AD3E1945A89851E /* Pods_Aste.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82011EB7183175411A99B3B1 /* Pods_Aste.framework */; };
 		D14A5B6C1DD26AFD00226EE3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */; };
 		D15BEC5D1DD2608C00E58050 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */; };
 		D15BEC5F1DD2608C00E58050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BEC5E1DD2608C00E58050 /* ViewController.swift */; };
@@ -18,7 +18,7 @@
 
 /* Begin PBXFileReference section */
 		44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.debug.xcconfig"; sourceTree = "<group>"; };
-		959614C8727D11B5A74CF95C /* libPods-Aste.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Aste.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		82011EB7183175411A99B3B1 /* Pods_Aste.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Aste.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D15BEC591DD2608C00E58050 /* Aste.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aste.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -35,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				82BC8CE9DCC46F8D9AB23B1C /* libPods-Aste.a in Frameworks */,
+				4D44EB750AD3E1945A89851E /* Pods_Aste.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +86,7 @@
 		E0731DB3F67855CB43BA41F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				959614C8727D11B5A74CF95C /* libPods-Aste.a */,
+				82011EB7183175411A99B3B1 /* Pods_Aste.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -98,12 +98,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D15BEC6B1DD2608C00E58050 /* Build configuration list for PBXNativeTarget "Aste" */;
 			buildPhases = (
-				0653CE5983DCCCAD3A8DA825 /* Check Pods Manifest.lock */,
+				0653CE5983DCCCAD3A8DA825 /* [CP] Check Pods Manifest.lock */,
 				D15BEC551DD2608C00E58050 /* Sources */,
 				D15BEC561DD2608C00E58050 /* Frameworks */,
 				D15BEC571DD2608C00E58050 /* Resources */,
-				3735C163928F3B7CE93AFE10 /* Embed Pods Frameworks */,
-				966FDC2404F35DA95877A2AC /* Copy Pods Resources */,
+				3735C163928F3B7CE93AFE10 /* [CP] Embed Pods Frameworks */,
+				966FDC2404F35DA95877A2AC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -164,29 +164,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0653CE5983DCCCAD3A8DA825 /* Check Pods Manifest.lock */ = {
+		0653CE5983DCCCAD3A8DA825 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		3735C163928F3B7CE93AFE10 /* Embed Pods Frameworks */ = {
+		3735C163928F3B7CE93AFE10 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -194,14 +194,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Aste/Pods-Aste-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		966FDC2404F35DA95877A2AC /* Copy Pods Resources */ = {
+		966FDC2404F35DA95877A2AC /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
