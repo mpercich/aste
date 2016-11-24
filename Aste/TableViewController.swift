@@ -10,15 +10,17 @@ import UIKit
 import Firebase
 
 class TableViewController: UITableViewController {
-    // your firebase reference as a property
-    var ref: FIRDatabaseReference!
     // your data source, you can replace this with your own model if you wish
-    var items = [FDataSnapshot]()
-
+    var aste: Array<FIRDataSnapshot> = []
+    lazy var ref: FIRDatabaseReference = FIRDatabase.database().reference()
+    var asteRef: FIRDatabaseReference!
+    var refHandle: FIRDatabaseHandle?
+    let asta: Asta = Asta()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.asteRef = ref //.child("A207744")
         // initialize the ref in viewDidLoad
-        ref = Firebase(url: "<my-firebase-app>/items")
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -26,26 +28,52 @@ class TableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        // listen for update with the .Value event
-        ref.observeEventType(.Value) { (snapshot: FDataSnapshot!) in
-            
-            var newItems = [FDataSnapshot]()
-            
-            // loop through the children and append them to the new array
-            for item in snapshot.children {
-                newItems.append(item as! FDataSnapshot)
-            }
-            
-            // replace the old array
-            self.items = newItems
-            // reload the UITableView
-            self.tableView.reloadData()
+    override func viewWillAppear(_ animated: Bool) {
+        aste.removeAll()
+        var q: FIRDatabaseQuery = ref.queryOrderedByKey()
+        
+        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            // Get user value
+            _ = snapshot.value as? NSDictionary
+        }) { (error) in
+            print(error.localizedDescription)
         }
+        // [START child_event_listener]
+        // Listen for new aste in the Firebase database
+        asteRef.observe(.childAdded, with: { (snapshot) -> Void in
+            self.aste.append(snapshot)
+            self.tableView.insertRows(at: [IndexPath(row: self.aste.count-1, section: 0)], with: UITableViewRowAnimation.automatic)
+        })
+        // Listen for deleted aste in the Firebase database
+        asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
+            let index = self.indexOfMessage(snapshot)
+            self.aste.remove(at: index)
+            self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.automatic)
+        })
+        // [END child_event_listener]
+        // [START post_value_event_listener]
+        refHandle = asteRef.observe(.value, with: { (snapshot) in
+            let asteDict = snapshot.value as? [String : AnyObject] ?? [:]
+            // [START_EXCLUDE]
+            self.asta.setValuesForKeys(asteDict)
+            self.tableView.reloadData()
+            //self.navigationItem.title = self.asta.title
+            // [END_EXCLUDE]
+        })
+        // [END post_value_event_listener]
     }
-
+    
+    func indexOfMessage(_ snapshot: FIRDataSnapshot) -> Int {
+        var index = 0
+        for asta in self.aste {
+            if snapshot.key == asta.key {
+                return index
+            }
+            index += 1
+        }
+        return -1
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -55,12 +83,12 @@ class TableViewController: UITableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return aste.count
     }
 
     /*
