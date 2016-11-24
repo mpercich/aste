@@ -19,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.debug.xcconfig"; sourceTree = "<group>"; };
+		49E076A91DE6E1A800384A49 /* get_aste.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = get_aste.py; sourceTree = "<group>"; };
 		82011EB7183175411A99B3B1 /* Pods_Aste.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Aste.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D15BEC591DD2608C00E58050 /* Aste.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aste.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,9 +54,18 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		49E076A81DE6E18300384A49 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				49E076A91DE6E1A800384A49 /* get_aste.py */,
+			);
+			name = Scripts;
+			sourceTree = "<group>";
+		};
 		D15BEC501DD2608B00E58050 = {
 			isa = PBXGroup;
 			children = (
+				49E076A81DE6E18300384A49 /* Scripts */,
 				D15BEC5B1DD2608C00E58050 /* Aste */,
 				D15BEC5A1DD2608C00E58050 /* Products */,
 				09A09251967ED59F87EB192B /* Pods */,
