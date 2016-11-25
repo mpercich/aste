@@ -6,5 +6,6 @@ use_frameworks!
 target 'Aste' do
 	pod 'Firebase/Core'
     pod 'Firebase/Database'
+    pod 'Firebase/Messaging'
 end
 
