@@ -17,7 +17,6 @@ class MapController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
 
     var asta: FIRDataSnapshot?
-    let regionRadius: CLLocationDistance = 1000
     lazy var locationManager: CLLocationManager = {
         var _locationManager = CLLocationManager()
         _locationManager.delegate = self
@@ -35,10 +34,17 @@ class MapController: UIViewController {
         }
     }
     
-    func centerMapOnLocation(location: CLLocation) {
+    func centerMapOnLocation(userLocation: CLLocation, location: CLLocation) {
         
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2.0, regionRadius * 2.0)
-        mapView.setRegion(coordinateRegion, animated: true)
+        var annotationPoint = MKMapPointForCoordinate(userLocation.coordinate);
+        var zoomRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0);
+        annotationPoint = MKMapPointForCoordinate(location.coordinate);
+        let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0);
+        zoomRect = MKMapRectUnion(zoomRect, pointRect)
+        var region = MKCoordinateRegionForMapRect(zoomRect);
+        region.span.latitudeDelta *= 1.2;   // Increase span by 20% to add some margin
+        region.span.longitudeDelta *= 1.2;
+        mapView.setRegion(region, animated: true)
     }
     
     override func viewDidLoad() {
@@ -58,23 +64,24 @@ extension MapController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locationManager.stopUpdatingLocation()
-        let initialLocation = locations.first!
-        centerMapOnLocation(location: initialLocation)
+        let userLocation = locations.first!
         mapView.showsUserLocation = true
         let coordinates = asta?.childSnapshot(forPath: "Coordinate").value as? String
         if let assumedCoordinates = coordinates {
             var coordinatesArr = assumedCoordinates.components(separatedBy: ",")
             let latitude = Double(coordinatesArr[0])
             let longitude = Double(coordinatesArr[1])
-            let initialLocation = CLLocation(latitude: latitude!, longitude: longitude!)
+            let astaLocation = CLLocation(latitude: latitude!, longitude: longitude!)
+            centerMapOnLocation(userLocation: userLocation, location: astaLocation)
             let dropPin = MKPointAnnotation()
-            dropPin.coordinate = initialLocation.coordinate
+            dropPin.coordinate = astaLocation.coordinate
             dropPin.subtitle = asta?.childSnapshot(forPath: "Indirizzo").value as? String
             dropPin.title = TableViewController.formatPrice(value: asta?.childSnapshot(forPath: "Prezzo").value)
             mapView.addAnnotation(dropPin)
         }
+
     }
-        
+    
 }
 
     /*
