@@ -7,32 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		49E076AB1DE6E8ED00384A49 /* Asta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E076AA1DE6E8ED00384A49 /* Asta.swift */; };
 		4D44EB750AD3E1945A89851E /* Pods_Aste.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82011EB7183175411A99B3B1 /* Pods_Aste.framework */; };
 		D14A5B6C1DD26AFD00226EE3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */; };
 		D15BEC5D1DD2608C00E58050 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */; };
-		D15BEC5F1DD2608C00E58050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BEC5E1DD2608C00E58050 /* ViewController.swift */; };
 		D15BEC621DD2608C00E58050 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D15BEC601DD2608C00E58050 /* Main.storyboard */; };
 		D15BEC641DD2608C00E58050 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D15BEC631DD2608C00E58050 /* Assets.xcassets */; };
 		D15BEC671DD2608C00E58050 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D15BEC651DD2608C00E58050 /* LaunchScreen.storyboard */; };
 		D1DA4A081DE6268300C6A060 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA4A071DE6268300C6A060 /* TableViewController.swift */; };
+		D1DA4A0A1DE7759A00C6A060 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA4A091DE7759A00C6A060 /* TableViewCell.swift */; };
+		D1DA4A0C1DE7B18E00C6A060 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DA4A0B1DE7B18E00C6A060 /* MapKit.framework */; };
+		D1DA4A0E1DE7B53F00C6A060 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA4A0D1DE7B53F00C6A060 /* MapController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.debug.xcconfig"; sourceTree = "<group>"; };
 		49E076A91DE6E1A800384A49 /* get_aste.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = get_aste.py; sourceTree = "<group>"; };
-		49E076AA1DE6E8ED00384A49 /* Asta.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Asta.swift; sourceTree = "<group>"; };
 		49E076AC1DE6F6A600384A49 /* Aste.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Aste.entitlements; sourceTree = "<group>"; };
 		82011EB7183175411A99B3B1 /* Pods_Aste.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Aste.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D15BEC591DD2608C00E58050 /* Aste.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aste.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D15BEC5E1DD2608C00E58050 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D15BEC611DD2608C00E58050 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D15BEC631DD2608C00E58050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D15BEC661DD2608C00E58050 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D15BEC681DD2608C00E58050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1DA4A071DE6268300C6A060 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
+		D1DA4A091DE7759A00C6A060 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		D1DA4A0B1DE7B18E00C6A060 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		D1DA4A0D1DE7B53F00C6A060 /* MapController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
 		DC6ECA265D98731CFDD84501 /* Pods-Aste.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.release.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -41,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1DA4A0C1DE7B18E00C6A060 /* MapKit.framework in Frameworks */,
 				4D44EB750AD3E1945A89851E /* Pods_Aste.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,14 +92,14 @@
 			children = (
 				49E076AC1DE6F6A600384A49 /* Aste.entitlements */,
 				D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */,
-				D15BEC5E1DD2608C00E58050 /* ViewController.swift */,
+				D1DA4A091DE7759A00C6A060 /* TableViewCell.swift */,
 				D15BEC601DD2608C00E58050 /* Main.storyboard */,
+				D1DA4A0D1DE7B53F00C6A060 /* MapController.swift */,
 				D15BEC631DD2608C00E58050 /* Assets.xcassets */,
 				D15BEC651DD2608C00E58050 /* LaunchScreen.storyboard */,
 				D15BEC681DD2608C00E58050 /* Info.plist */,
 				D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */,
 				D1DA4A071DE6268300C6A060 /* TableViewController.swift */,
-				49E076AA1DE6E8ED00384A49 /* Asta.swift */,
 			);
 			path = Aste;
 			sourceTree = "<group>";
@@ -104,6 +107,7 @@
 		E0731DB3F67855CB43BA41F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D1DA4A0B1DE7B18E00C6A060 /* MapKit.framework */,
 				82011EB7183175411A99B3B1 /* Pods_Aste.framework */,
 			);
 			name = Frameworks;
@@ -239,9 +243,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D15BEC5F1DD2608C00E58050 /* ViewController.swift in Sources */,
+				D1DA4A0E1DE7B53F00C6A060 /* MapController.swift in Sources */,
+				D1DA4A0A1DE7759A00C6A060 /* TableViewCell.swift in Sources */,
 				D1DA4A081DE6268300C6A060 /* TableViewController.swift in Sources */,
-				49E076AB1DE6E8ED00384A49 /* Asta.swift in Sources */,
 				D15BEC5D1DD2608C00E58050 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

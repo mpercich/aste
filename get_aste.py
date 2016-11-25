@@ -7,6 +7,7 @@ import pyrebase
 import googlemaps
 import re
 import sys
+import locale
 
 def send_request(body):
 	global payload
@@ -41,6 +42,11 @@ def grab(parameters, list):
 		for y, tag in enumerate(record.parent.find_all('p', class_='psel')):
 			temp.append(tag.get_text(' ', strip=True))
 		temp += [''] * (keys.index('Note') - x - y - 1)
+		conv = temp[keys.index('Prezzo')].strip('€ ').replace('.', '')
+		try:
+			temp[keys.index('Prezzo')] = locale.atof(conv)
+		except:
+			temp[keys.index('Prezzo')] = 0
 		try:
 			temp.append(record.parent.find('div', class_='schedadettagliata').find('a')['href'])	
 		except:
@@ -73,6 +79,8 @@ config = {
   'serviceAccount': ''
 }
 
+
+locale.setlocale(locale.LC_ALL, 'it_IT')
 urllib3.disable_warnings()
 gmaps = googlemaps.Client(key='AIzaSyAW6WUTf8TVlGlpzbG0R_nYJxH79MXstxA') 
 #gmaps = googlemaps.Client(key='AIzaSyAW6WUTf8TVlGlpzbG0R_nYJxH79MXstxA', requests_kwargs={'proxies': {'http': 'http://us00749:Korcula1@proxymil.internal.unicredit.eu:80', 'https': 'https://us00749:Korcula1@proxymil.internal.unicredit.eu:80'}, 'verify': False}) 
@@ -92,37 +100,35 @@ while True:
 	search = '__SCROLLPOSITIONX=0&__SCROLLPOSITIONY=0&__EVENTTARGET=&__EVENTARGUMENT=&ctl00%24ContentPlaceHolder1%24Primasel2_1%24dlstPrimasel%24ctl50%24drpdPaginazione=1&ctl00%24ContentPlaceHolder1%24Primasel2_1%24dlstPrimasel%24ctl50%24btnSuccessiva=Pagina+successiva'
 	if 'successiva' not in response.text:
 		break
-
 set_aste = set([k for immobile in aste for k in immobile.keys()]);
 set_db = set(db_keys.val())
 
 new_set = set_aste - set_db
 removed_set = set_db - set_aste
-changed_set = set_aste - new_set
+common_set = set_aste - new_set
 
-if (new_set != set()):
-	print('Nuove', new_set)
-if (removed_set != set()):
-	print('Rimosse:', removed_set)
-if (changed_set != set()):	
-	print('Comuni:', changed_set)
-changed = []
-for k in changed_set:
+changed_set = set()
+for k in common_set:
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			item = db.child(k).get().val()
 			if (set(item.values()) - set(list(immobile.values())[0].values()) != set()):
-				changed.append(k)
-				db.child(k).update(list(immobile.values())[0])
+				changed_set.add(k)
+				#db.child(k).update(list(immobile.values())[0])
 			break;
-for k in removed_set:
+for k in (removed_set | changed_set):
 	db.child(k).remove()
-for k in new_set:
+for k in (new_set | changed_set):
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			db.child(k).set(list(immobile.values())[0])
 			break;	
-
+if (new_set != set()):
+	print('Nuove', new_set)
+if (removed_set != set()):
+	print('Rimosse:', removed_set)
+if (common_set != set()):	
+	print('Comuni:', common_set)
 with open('aste.csv', 'w') as f:  # Just use 'w' mode in 3.x
 	w = csv.DictWriter(f, keys)
 	w.writeheader()
@@ -136,7 +142,7 @@ with open('aste.csv', 'w') as f:  # Just use 'w' mode in 3.x
 storage = firebase.storage()
 storage.child('aste.csv').put('aste.csv')
 
-print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed)), '\nRimosse:', str(len(removed_set)))
+print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
 
 
 
