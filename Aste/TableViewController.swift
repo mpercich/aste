@@ -121,16 +121,7 @@ class TableViewController: UITableViewController {
 
         // Configure the cell...
         cell.key.text = aste[indexPath.row].key
-        let price = aste[indexPath.row].childSnapshot(forPath: "Prezzo").value as? NSNumber
-        if let assumedPrice = price {
-            let formatter = NumberFormatter()
-            formatter.locale = Locale(identifier: "it_IT")
-            formatter.numberStyle = .currency
-            cell.price.text = formatter.string(from: assumedPrice)
-        }
-        else {
-            cell.price.text = ""
-        }
+        cell.price.text = TableViewController.formatPrice(value: aste[indexPath.row].childSnapshot(forPath: "Prezzo").value)
         cell.date.text = aste[indexPath.row].childSnapshot(forPath: "Data").value as? String
         cell.type.text = aste[indexPath.row].childSnapshot(forPath: "Tipologia").value as? String
         cell.property.text = aste[indexPath.row].childSnapshot(forPath: "Lotto").value as? String
@@ -157,9 +148,27 @@ class TableViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! MapController
-        destinationVC.coordinates = selectedAsta?.childSnapshot(forPath: "Coordinate").value as? String
+        destinationVC.asta = selectedAsta
     }
 
+    class func formatPrice(value: Any?) -> String
+    {
+        let price = value as? NSNumber
+        if let assumedPrice = price {
+            let formatter = NumberFormatter()
+            formatter.locale = Locale(identifier: "it_IT")
+            formatter.numberStyle = .currency
+            return formatter.string(from: assumedPrice)!
+        }
+        return ""
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        get {
+            return false
+        }
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
