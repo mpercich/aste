@@ -8,6 +8,8 @@
 
 import UIKit
 import Firebase
+import UserNotifications
+
 
 class TableViewController: UITableViewController {
     // your data source, you can replace this with your own model if you wish
@@ -19,28 +21,10 @@ class TableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-        // initialize the ref in viewDidLoad
-        asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-    }
-    override func viewWillAppear(_ animated: Bool) {
         aste.removeAll()
         self.tableView.reloadData()
-
-
-//        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-//            // Get user value
-//            _ = snapshot.value as? NSDictionary
-//        }) { (error) in
-//            print(error.localizedDescription)
-//        }
-        // [START child_event_listener]
-        // Listen for new aste in the Firebase database
+        // initialize the ref in viewDidLoad
+        asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
         asteQuery?.observe(.childAdded, with: { (snapshot) -> Void in
             let index = self.indexByPrice(snapshot: snapshot)
             self.aste.insert(snapshot, at: index)
@@ -54,26 +38,46 @@ class TableViewController: UITableViewController {
         })
         // [END child_event_listener]
         // [START post_value_event_listener]
-//        refHandle = asteQuery?.observe(.value, with: { (snapshot) in
-//            let asteDict = snapshot.value as? [String : AnyObject] ?? [:]
-//            for snap in asteDict
-//            {
-//                self.aste.append(snap)
-//                self.tableView.insertRows(at: [IndexPath(row: self.aste.count-1, section: 0)], with: UITableViewRowAnimation.automatic)
-//            }
+        //        refHandle = asteQuery?.observe(.value, with: { (snapshot) in
+        //            let asteDict = snapshot.value as? [String : AnyObject] ?? [:]
+        //            for snap in asteDict
+        //            {
+        //                self.aste.append(snap)
+        //                self.tableView.insertRows(at: [IndexPath(row: self.aste.count-1, section: 0)], with: UITableViewRowAnimation.automatic)
+        //            }
         
-            
-            // [START_EXCLUDE]
-            //self.asta.setValuesForKeys(asteDict)
-            //self.tableView.reloadData()
-            //self.navigationItem.title = self.asta.title
-            // [END_EXCLUDE]
+        
+        // [START_EXCLUDE]
+        //self.asta.setValuesForKeys(asteDict)
+        //self.tableView.reloadData()
+        //self.navigationItem.title = self.asta.title
+        // [END_EXCLUDE]
         //})
         // [END post_value_event_listener]
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        //aste.removeAll()
+        //self.tableView.reloadData()
+
+
+//        ref.observeSingleEvent(of: .value, with: { (snapshot) in
+//            // Get user value
+//            _ = snapshot.value as? NSDictionary
+//        }) { (error) in
+//            print(error.localizedDescription)
+//        }
+        // [START child_event_listener]
+        // Listen for new aste in the Firebase database
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        asteQuery?.removeAllObservers()
+        //asteQuery?.removeAllObservers()
     }
     
 
@@ -135,6 +139,7 @@ class TableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Create a variable that you want to send based on the destination view controller
         // You can get a reference to the data by using indexPath shown below
+        tableView.deselectRow(at: indexPath, animated: true)
         selectedAsta = aste[indexPath.row]
         
         // Create an instance of PlayerTableViewController and pass the variable
@@ -168,7 +173,7 @@ class TableViewController: UITableViewController {
             return false
         }
     }
-    
+        
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -213,5 +218,45 @@ class TableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
 }
+
+// [START ios_10_message_handling]
+@available(iOS 10, *)
+extension TableViewController : UNUserNotificationCenterDelegate {
+    // Receive displayed notifications for iOS 10 devices.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        // Print message ID.
+        print("Message ID: \(userInfo["gcm.message_id"]!)")
+        // Print full message.
+        print(userInfo)
+        completionHandler([.badge, .alert, .sound])
+    }
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        // Print message ID.
+        print("Message ID: \(userInfo["gcm.message_id"]!)")
+        print("Key: \(userInfo["Codice"]!)")
+        print("Prezzo: \(userInfo["Prezzo"]!)")
+        print("Indirizzo: \(userInfo["Indirizzo"]!)")
+        let key = userInfo["Codice"] as! String
+        // Print full message.
+        print(userInfo)
+        var index = 0
+        for asta in self.aste {
+            if asta.key == key {
+                let indexPath = IndexPath(row: index, section: 0)
+                self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
+                break
+            }
+            index += 1
+        }
+        completionHandler()
+    }
+}
+// [END ios_10_message_handling]
+

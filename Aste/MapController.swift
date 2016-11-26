@@ -27,6 +27,9 @@ class MapController: UIViewController {
         
         return _locationManager
     }()
+    lazy var address: String? = self.asta?.childSnapshot(forPath: "Indirizzo").value as? String
+    lazy var coordinates: String? = self.asta?.childSnapshot(forPath: "Coordinate").value as? String
+    lazy var price: String? = TableViewController.formatPrice(value: self.asta?.childSnapshot(forPath: "Prezzo").value)
     
     override var prefersStatusBarHidden: Bool {
         get {
@@ -42,8 +45,8 @@ class MapController: UIViewController {
         let pointRect = MKMapRectMake(annotationPoint.x, annotationPoint.y, 0, 0);
         zoomRect = MKMapRectUnion(zoomRect, pointRect)
         var region = MKCoordinateRegionForMapRect(zoomRect);
-        region.span.latitudeDelta *= 1.2;   // Increase span by 20% to add some margin
-        region.span.longitudeDelta *= 1.2;
+        region.span.latitudeDelta *= 1.5;   // Increase span by 20% to add some margin
+        region.span.longitudeDelta *= 1.5;
         mapView.setRegion(region, animated: true)
     }
     
@@ -51,6 +54,7 @@ class MapController: UIViewController {
         super.viewDidLoad()
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
+        self.title = address
     }
     
     override func didReceiveMemoryWarning() {
@@ -66,7 +70,7 @@ extension MapController: CLLocationManagerDelegate {
         locationManager.stopUpdatingLocation()
         let userLocation = locations.first!
         mapView.showsUserLocation = true
-        let coordinates = asta?.childSnapshot(forPath: "Coordinate").value as? String
+        // FIXME: prevent multiple calls
         if let assumedCoordinates = coordinates {
             var coordinatesArr = assumedCoordinates.components(separatedBy: ",")
             let latitude = Double(coordinatesArr[0])
@@ -75,10 +79,11 @@ extension MapController: CLLocationManagerDelegate {
             centerMapOnLocation(userLocation: userLocation, location: astaLocation)
             let dropPin = MKPointAnnotation()
             dropPin.coordinate = astaLocation.coordinate
-            dropPin.subtitle = asta?.childSnapshot(forPath: "Indirizzo").value as? String
-            dropPin.title = TableViewController.formatPrice(value: asta?.childSnapshot(forPath: "Prezzo").value)
+            dropPin.subtitle = address
+            dropPin.title = price
             mapView.addAnnotation(dropPin)
         }
+        print("Annotations: \(mapView.annotations.count)")
 
     }
     

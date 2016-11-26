@@ -8,6 +8,7 @@ import googlemaps
 import re
 import sys
 import locale
+from pyfcm import FCMNotification
 
 def send_request(body):
 	global payload
@@ -122,25 +123,43 @@ for k in (new_set | changed_set):
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			db.child(k).set(list(immobile.values())[0])
-			break;	
+			break
 if (new_set != set()):
 	print('Nuove', new_set)
 if (removed_set != set()):
 	print('Rimosse:', removed_set)
 if (common_set != set()):	
 	print('Comuni:', common_set)
-with open('aste.csv', 'w') as f:  # Just use 'w' mode in 3.x
-	w = csv.DictWriter(f, keys)
-	w.writeheader()
+
+#with open('aste.csv', 'w') as f:  # Just use 'w' mode in 3.x
+#	w = csv.DictWriter(f, keys)
+#	w.writeheader()
+#	for immobile in aste:
+#		#result = db.child(next(iter(immobile.keys()))).set(next(iter(immobile.values())))
+#		k = dict(Codice=next(iter(immobile.keys())))
+#		v = next(iter(immobile.values()))	
+#		k.update(v)	
+#		w.writerow(k)
+
+#storage = firebase.storage()
+#storage.child('aste.csv').put('aste.csv')
+push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8')
+
+registration_id = 'Xsz-7-qxs0:APA91bGowRZ0369CGUCnLSEpE2Kmo8dfB3riIjUcwoEMCcnT1FDC6Jia-rR47UVEoVU4ZnO1G8D35VhLFuq_t_qEaSqa8Wsuz5n1Dq6nehmFlDiYICtNqOQhSRLc5vmoUqLTCqZ-EujZ'
+
+message_title = 'Nuova asta'
+for k in new_set:
 	for immobile in aste:
-		#result = db.child(next(iter(immobile.keys()))).set(next(iter(immobile.values())))
-		k = dict(Codice=next(iter(immobile.keys())))
-		v = next(iter(immobile.values()))	
-		k.update(v)	
-		w.writerow(k)
-		
-storage = firebase.storage()
-storage.child('aste.csv').put('aste.csv')
+		if (list(immobile.keys())[0] == k):
+			data_message = {
+				'Codice' : k,
+				'Prezzo' : immobile[k]['Prezzo'],
+				'Indirizzo' : immobile[k]['Indirizzo']
+			}
+			#print(k, data_message)
+			message_body = k + ' - ' + str(immobile[k]['Prezzo']) + ' - ' + immobile[k]['Indirizzo']
+			result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message)
+
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
 

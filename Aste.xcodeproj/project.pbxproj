@@ -21,9 +21,9 @@
 
 /* Begin PBXFileReference section */
 		44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.debug.xcconfig"; sourceTree = "<group>"; };
-		49E076A91DE6E1A800384A49 /* get_aste.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = get_aste.py; sourceTree = "<group>"; };
-		49E076AC1DE6F6A600384A49 /* Aste.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Aste.entitlements; sourceTree = "<group>"; };
+		49E076A91DE6E1A800384A49 /* get_aste.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = get_aste.py; sourceTree = "<group>"; usesTabs = 1; };
 		82011EB7183175411A99B3B1 /* Pods_Aste.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Aste.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D11C37271DE8DF7700BAF846 /* Aste.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Aste.entitlements; sourceTree = "<group>"; };
 		D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D15BEC591DD2608C00E58050 /* Aste.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aste.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -90,7 +90,7 @@
 		D15BEC5B1DD2608C00E58050 /* Aste */ = {
 			isa = PBXGroup;
 			children = (
-				49E076AC1DE6F6A600384A49 /* Aste.entitlements */,
+				D11C37271DE8DF7700BAF846 /* Aste.entitlements */,
 				D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */,
 				D1DA4A091DE7759A00C6A060 /* TableViewCell.swift */,
 				D15BEC601DD2608C00E58050 /* Main.storyboard */,
@@ -149,8 +149,11 @@
 					D15BEC581DD2608C00E58050 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = FBBFZNEHZV;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.Keychain = {
 								enabled = 1;
 							};
@@ -378,6 +381,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpercich.aste;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2720c6e7-8769-462a-a437-e7df58d93439";
+				PROVISIONING_PROFILE_SPECIFIER = "aste profile";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -393,6 +398,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpercich.aste;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2720c6e7-8769-462a-a437-e7df58d93439";
+				PROVISIONING_PROFILE_SPECIFIER = "aste profile";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
