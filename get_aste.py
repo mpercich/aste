@@ -56,7 +56,13 @@ def grab(parameters, list):
 			temp.append(record.parent.find('div', class_='elencoallegati').get_text('', strip=True))
 		except:
 			temp += ['']
-		found = re.search('Comune di (.+[0-9]{5})', temp[8])
+		if temp[keys.index('Prezzo')] == 0:
+			try:
+				t = temp[keys.index('Descrizione')].split("Euro ")[1].rsplit(".", 1)[0].replace('.', '')
+				temp[keys.index('Prezzo')] = locale.atof(t)
+			except:
+				pass
+		found = re.search('Comune di (.+[0-9]{5})', temp[keys.index('Descrizione')])
 		if found:
 		    geocode_result = gmaps.geocode(found.group(1))
 		    temp.append(geocode_result[0]['formatted_address'])
@@ -70,7 +76,22 @@ def grab(parameters, list):
 		key[chiave] = immobile
 		#print(immobile)
 		list.append(key)
-	return response	
+	return response
+
+def send_notification(message_title, key, immobile):
+	try:
+		data_message = {
+			'Codice' : k,
+			'Prezzo' : immobile['Prezzo'],
+			'Indirizzo' : immobile['Indirizzo']
+			}
+	except:
+		pass
+	print(message_title, key, data_message)
+	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
+	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message)
+
+
 
 config = {
   'apiKey': 'AIzaSyDdiBn8Y6ymkGwFbWvy-toDDZvGwfJT_-o',
@@ -116,7 +137,7 @@ for k in common_set:
 			if (set(item.values()) - set(list(immobile.values())[0].values()) != set()):
 				changed_set.add(k)
 				#db.child(k).update(list(immobile.values())[0])
-			break;
+			break
 for k in (removed_set | changed_set):
 	db.child(k).remove()
 for k in (new_set | changed_set):
@@ -143,23 +164,19 @@ if (common_set != set()):
 
 #storage = firebase.storage()
 #storage.child('aste.csv').put('aste.csv')
+
 push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8')
 
 registration_id = 'Xsz-7-qxs0:APA91bGowRZ0369CGUCnLSEpE2Kmo8dfB3riIjUcwoEMCcnT1FDC6Jia-rR47UVEoVU4ZnO1G8D35VhLFuq_t_qEaSqa8Wsuz5n1Dq6nehmFlDiYICtNqOQhSRLc5vmoUqLTCqZ-EujZ'
 
-message_title = 'Nuova asta'
 for k in new_set:
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
-			data_message = {
-				'Codice' : k,
-				'Prezzo' : immobile[k]['Prezzo'],
-				'Indirizzo' : immobile[k]['Indirizzo']
-			}
-			#print(k, data_message)
-			message_body = k + ' - ' + str(immobile[k]['Prezzo']) + ' - ' + immobile[k]['Indirizzo']
-			result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message)
-
+			send_notification('Nuova asta', k, immobile[k])
+for k in changed_set:
+	for immobile in aste:
+		if (list(immobile.keys())[0] == k):
+			send_notification('Asta modificata', k, immobile[k])
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
 

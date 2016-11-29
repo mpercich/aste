@@ -67,26 +67,25 @@ class MapController: UIViewController {
 extension MapController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        locationManager.stopUpdatingLocation()
-        let userLocation = locations.first!
-        mapView.showsUserLocation = true
-        // FIXME: prevent multiple calls
-        if let assumedCoordinates = coordinates {
-            var coordinatesArr = assumedCoordinates.components(separatedBy: ",")
-            let latitude = Double(coordinatesArr[0])
-            let longitude = Double(coordinatesArr[1])
-            let astaLocation = CLLocation(latitude: latitude!, longitude: longitude!)
-            centerMapOnLocation(userLocation: userLocation, location: astaLocation)
-            let dropPin = MKPointAnnotation()
-            dropPin.coordinate = astaLocation.coordinate
-            dropPin.subtitle = address
-            dropPin.title = price
-            mapView.addAnnotation(dropPin)
+        //add annotation just first time
+        if (mapView.annotations.isEmpty) {
+            locationManager.stopUpdatingLocation()
+            let userLocation = locations.first!
+            mapView.showsUserLocation = true
+            if let assumedCoordinates = coordinates {
+                var coordinatesArr = assumedCoordinates.components(separatedBy: ",")
+                let latitude = Double(coordinatesArr[0])
+                let longitude = Double(coordinatesArr[1])
+                let astaLocation = CLLocation(latitude: latitude!, longitude: longitude!)
+                centerMapOnLocation(userLocation: userLocation, location: astaLocation)
+                let dropPin = MKPointAnnotation()
+                dropPin.coordinate = astaLocation.coordinate
+                dropPin.subtitle = address
+                dropPin.title = price
+                mapView.addAnnotation(dropPin)
+            }
         }
-        print("Annotations: \(mapView.annotations.count)")
-
     }
-    
 }
 
     /*

@@ -24,7 +24,7 @@ class TableViewController: UITableViewController {
         aste.removeAll()
         self.tableView.reloadData()
         // initialize the ref in viewDidLoad
-        asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
+        asteQuery = asteRef //.queryOrdered(byChild: "Prezzo")
         asteQuery?.observe(.childAdded, with: { (snapshot) -> Void in
             let index = self.indexByPrice(snapshot: snapshot)
             self.aste.insert(snapshot, at: index)
@@ -60,27 +60,14 @@ class TableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
-        //aste.removeAll()
-        //self.tableView.reloadData()
-
-
-//        ref.observeSingleEvent(of: .value, with: { (snapshot) in
-//            // Get user value
-//            _ = snapshot.value as? NSDictionary
-//        }) { (error) in
-//            print(error.localizedDescription)
-//        }
-        // [START child_event_listener]
-        // Listen for new aste in the Firebase database
-        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        //asteQuery?.removeAllObservers()
+
     }
     
-
     func indexByKey(snapshot: FIRDataSnapshot) -> Int {
         var index = 0
         for asta in self.aste {
@@ -95,7 +82,7 @@ class TableViewController: UITableViewController {
     func indexByPrice(snapshot: FIRDataSnapshot) -> Int {
         var index = 0
         for asta in self.aste {
-            if (snapshot.childSnapshot(forPath: "Prezzo").value as! Float) > (asta.childSnapshot(forPath: "Prezzo").value as! Float) {
+            if (snapshot.childSnapshot(forPath: "Prezzo").value as! Int) > (asta.childSnapshot(forPath: "Prezzo").value as! Int) {
                 return index
             }
             index += 1
@@ -156,16 +143,16 @@ class TableViewController: UITableViewController {
         destinationVC.asta = selectedAsta
     }
 
-    class func formatPrice(value: Any?) -> String
-    {
+    class func formatPrice(value: Any?) -> String {
+        var result: String?
         let price = value as? NSNumber
         if let assumedPrice = price {
             let formatter = NumberFormatter()
             formatter.locale = Locale(identifier: "it_IT")
             formatter.numberStyle = .currency
-            return formatter.string(from: assumedPrice)!
+            result = formatter.string(from: assumedPrice)!
         }
-        return ""
+        return result ?? ""
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -234,6 +221,7 @@ extension TableViewController : UNUserNotificationCenterDelegate {
         print(userInfo)
         completionHandler([.badge, .alert, .sound])
     }
+    
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
