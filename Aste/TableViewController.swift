@@ -21,10 +21,11 @@ class TableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("viewDidLoad")
         aste.removeAll()
         self.tableView.reloadData()
         // initialize the ref in viewDidLoad
-        asteQuery = asteRef //.queryOrdered(byChild: "Prezzo")
+        asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
         asteQuery?.observe(.childAdded, with: { (snapshot) -> Void in
             let index = self.indexByPrice(snapshot: snapshot)
             self.aste.insert(snapshot, at: index)
@@ -62,10 +63,11 @@ class TableViewController: UITableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear")
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-
+        print("viewDidDisappear")
     }
     
     func indexByKey(snapshot: FIRDataSnapshot) -> Int {
@@ -82,7 +84,7 @@ class TableViewController: UITableViewController {
     func indexByPrice(snapshot: FIRDataSnapshot) -> Int {
         var index = 0
         for asta in self.aste {
-            if (snapshot.childSnapshot(forPath: "Prezzo").value as! Int) > (asta.childSnapshot(forPath: "Prezzo").value as! Int) {
+            if (snapshot.childSnapshot(forPath: "Prezzo").value as! Int) >= (asta.childSnapshot(forPath: "Prezzo").value as! Int) {
                 return index
             }
             index += 1
@@ -112,6 +114,7 @@ class TableViewController: UITableViewController {
 
         // Configure the cell...
         cell.key.text = aste[indexPath.row].key
+        let prezzo = TableViewController.formatPrice(value: aste[indexPath.row].childSnapshot(forPath: "Prezzo").value)
         cell.price.text = TableViewController.formatPrice(value: aste[indexPath.row].childSnapshot(forPath: "Prezzo").value)
         cell.date.text = aste[indexPath.row].childSnapshot(forPath: "Data").value as? String
         cell.type.text = aste[indexPath.row].childSnapshot(forPath: "Tipologia").value as? String
@@ -119,7 +122,7 @@ class TableViewController: UITableViewController {
         cell.sale.text = aste[indexPath.row].childSnapshot(forPath: "Vendita").value as? String
         cell.address.text = aste[indexPath.row].childSnapshot(forPath: "Indirizzo").value as? String
         cell.attachment.text = aste[indexPath.row].childSnapshot(forPath: "Allegati").value as? String
-
+        print("\(indexPath.row) \(prezzo)")
         return cell
     }
 
