@@ -20,19 +20,34 @@ class TableViewController: UITableViewController {
     var selectedAsta : FIRDataSnapshot?
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         print("viewDidLoad")
+        super.viewDidLoad()
         aste.removeAll()
         self.tableView.reloadData()
+        var ignoreItems = true;
         // initialize the ref in viewDidLoad
         asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
-        asteQuery?.observe(.childAdded, with: { (snapshot) -> Void in
-            let index = self.indexByPrice(snapshot: snapshot)
-            self.aste.insert(snapshot, at: index)
-            self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.automatic)
+        asteRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            //let asteDict = snapshot.child as? [FIRDataSnapshot]
+            ignoreItems = false
+            for snap in snapshot.children
+            {
+                self.insertRow(content: snap as! FIRDataSnapshot)
+                //self.aste.append(snap)
+                
+                //self.tableView.insertRows(at: [IndexPath(row: self.aste.count-1, section: 0)], with: UITableViewRowAnimation.automatic)
+            }
+        })
+        asteRef.observe(.childAdded, with: { (snapshot) -> Void in
+            if (!ignoreItems) {
+                self.insertRow(content: snapshot)
+            }
+//            let index = self.indexByPrice(snapshot: snapshot)
+//            self.aste.insert(snapshot, at: index)
+//            self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
         })
         // Listen for deleted aste in the Firebase database
-        asteQuery?.observe(.childRemoved, with: { (snapshot) -> Void in
+        asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
             let index = self.indexByKey(snapshot: snapshot)
             self.aste.remove(at: index)
             self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.automatic)
@@ -64,10 +79,22 @@ class TableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         print("viewWillAppear")
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        print("viewDidDisappear")
+        super.viewDidDisappear(animated)
+    }
+    
+    func insertRow(content: FIRDataSnapshot)
+    {
+        let index = self.indexByPrice(snapshot: content)
+        self.aste.insert(content, at: index)
+        self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
     }
     
     func indexByKey(snapshot: FIRDataSnapshot) -> Int {
