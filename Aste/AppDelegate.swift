@@ -24,10 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UNUserNotificationCenter.current().requestAuthorization(
                 options: authOptions,
                 completionHandler: {_, _ in })
-            let nav: UINavigationController = self.window!.rootViewController as! UINavigationController
-            let tvc: TableViewController = nav.topViewController as! TableViewController
             // For iOS 10 display notification (sent via APNS)
-            UNUserNotificationCenter.current().delegate = tvc
+            UNUserNotificationCenter.current().delegate = self
             // For iOS 10 data message (sent via FCM)
             FIRMessaging.messaging().remoteMessageDelegate = self
             
@@ -114,7 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 // [START ios_10_data_message_handling]
-extension AppDelegate : FIRMessagingDelegate {
+extension AppDelegate: FIRMessagingDelegate {
     // Receive data message on iOS 10 devices while app is in the foreground.
     func applicationReceivedRemoteMessage(_ remoteMessage: FIRMessagingRemoteMessage) {
         print(remoteMessage.appData)
@@ -146,5 +144,40 @@ extension AppDelegate : FIRMessagingDelegate {
     func applicationReceivedRemoteMessage(_ remoteMessage: FIRMessagingRemoteMessage) {
     }
 
+@available(iOS 10, *)
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    // Receive displayed notifications for iOS 10 devices.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        // Print full message.
+        print(userInfo)
+        completionHandler([.badge, .alert, .sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        // Print message ID.
+        print("Message ID: \(userInfo["gcm.message_id"]!)")
+        print("Key: \(userInfo["Codice"]!)")
+        print("Prezzo: \(userInfo["Prezzo"]!)")
+        print("Indirizzo: \(userInfo["Indirizzo"]!)")
+        let key = userInfo["Codice"] as! String
+        let nav: UINavigationController = self.window!.rootViewController as! UINavigationController
+        if !(nav.topViewController is TableViewController) {
+            for controller in nav.viewControllers {
+                if controller is TableViewController {
+                    nav.popToViewController(controller, animated: true)
+                }
+            }
+        }
+        let tableViewController = nav.topViewController as! TableViewController
+        tableViewController.rowToScroll = key as String?
+        completionHandler()
+    }
+}
 
 

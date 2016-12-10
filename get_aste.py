@@ -64,9 +64,10 @@ def grab(parameters, list):
 				pass
 		found = re.search('Comune di (.+[0-9]{5})', temp[keys.index('Descrizione')])
 		if found:
-		    geocode_result = gmaps.geocode(found.group(1))
-		    temp.append(geocode_result[0]['formatted_address'])
-		    temp.append(str(geocode_result[0]['geometry']['location']['lat']) + ',' + str(geocode_result[0]['geometry']['location']['lng']))
+			geocode_result = gmaps.geocode(found.group(1))
+			if geocode_result:
+				temp.append(geocode_result[0]['formatted_address'])
+				temp.append(str(geocode_result[0]['geometry']['location']['lat']) + ',' + str(geocode_result[0]['geometry']['location']['lng']))
 		for x, tag in enumerate(temp):
 			#print(keys[x], tag)
 			if x == 0:
@@ -86,7 +87,7 @@ def send_notification(message_title, key, immobile):
 			'Indirizzo' : immobile['Indirizzo']
 			}
 	except:
-		pass
+		return
 	print(message_title, key, data_message)
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
 	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message)

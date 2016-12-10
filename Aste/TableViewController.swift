@@ -17,7 +17,8 @@ class TableViewController: UITableViewController {
     lazy var asteRef: FIRDatabaseReference = FIRDatabase.database().reference()
     var asteQuery: FIRDatabaseQuery?
     var refHandle: FIRDatabaseHandle?
-    var selectedAsta : FIRDataSnapshot?
+    var selectedAsta: FIRDataSnapshot?
+    var rowToScroll: String?
     
     override func viewDidLoad() {
         print("viewDidLoad")
@@ -30,12 +31,14 @@ class TableViewController: UITableViewController {
         asteRef.observeSingleEvent(of: .value, with: { (snapshot) in
             //let asteDict = snapshot.child as? [FIRDataSnapshot]
             ignoreItems = false
-            for snap in snapshot.children
-            {
+            for snap in snapshot.children {
                 self.insertRow(content: snap as! FIRDataSnapshot)
-                //self.aste.append(snap)
-                
-                //self.tableView.insertRows(at: [IndexPath(row: self.aste.count-1, section: 0)], with: UITableViewRowAnimation.automatic)
+            }
+            if let row = self.rowToScroll {
+                let index = self.indexByKey(key: row)
+                let indexPath = IndexPath(row: index, section: 0)
+                self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
+                self.rowToScroll = nil
             }
         })
         asteRef.observe(.childAdded, with: { (snapshot) -> Void in
@@ -48,7 +51,7 @@ class TableViewController: UITableViewController {
         })
         // Listen for deleted aste in the Firebase database
         asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
-            let index = self.indexByKey(snapshot: snapshot)
+            let index = self.indexBySnapshotKey(snapshot: snapshot)
             self.aste.remove(at: index)
             self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.automatic)
         })
@@ -80,6 +83,14 @@ class TableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         print("viewWillAppear")
         super.viewWillAppear(animated)
+        if aste.count > 0 {
+            if let row = self.rowToScroll {
+                let index = self.indexByKey(key: row)
+                let indexPath = IndexPath(row: index, section: 0)
+                self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
+                self.rowToScroll = nil
+            }            
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -92,12 +103,12 @@ class TableViewController: UITableViewController {
     
     func insertRow(content: FIRDataSnapshot)
     {
-        let index = self.indexByPrice(snapshot: content)
+        let index = self.indexBySnapshotPrice(snapshot: content)
         self.aste.insert(content, at: index)
         self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
     }
     
-    func indexByKey(snapshot: FIRDataSnapshot) -> Int {
+    func indexBySnapshotKey(snapshot: FIRDataSnapshot) -> Int {
         var index = 0
         for asta in self.aste {
             if snapshot.key == asta.key {
@@ -108,7 +119,18 @@ class TableViewController: UITableViewController {
         return 0
     }
     
-    func indexByPrice(snapshot: FIRDataSnapshot) -> Int {
+    func indexByKey(key: String) -> Int {
+        var index = 0
+        for asta in self.aste {
+            if asta.key == key {
+                return index
+            }
+            index += 1
+        }
+        return 0
+    }
+    
+    func indexBySnapshotPrice(snapshot: FIRDataSnapshot) -> Int {
         var index = 0
         for asta in self.aste {
             if (snapshot.childSnapshot(forPath: "Prezzo").value as! Int) >= (asta.childSnapshot(forPath: "Prezzo").value as! Int) {
@@ -175,12 +197,12 @@ class TableViewController: UITableViewController {
 
     class func formatPrice(value: Any?) -> String {
         var result: String?
-        let price = value as? NSNumber
-        if let assumedPrice = price {
+        let assumedPrice = value as? NSNumber
+        if let price = assumedPrice {
             let formatter = NumberFormatter()
             formatter.locale = Locale(identifier: "it_IT")
             formatter.numberStyle = .currency
-            result = formatter.string(from: assumedPrice)!
+            result = formatter.string(from: price)!
         }
         return result ?? ""
     }
@@ -237,44 +259,4 @@ class TableViewController: UITableViewController {
     */
 }
 
-// [START ios_10_message_handling]
-@available(iOS 10, *)
-extension TableViewController : UNUserNotificationCenterDelegate {
-    // Receive displayed notifications for iOS 10 devices.
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                willPresent notification: UNNotification,
-                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        let userInfo = notification.request.content.userInfo
-        // Print message ID.
-        print("Message ID: \(userInfo["gcm.message_id"]!)")
-        // Print full message.
-        print(userInfo)
-        completionHandler([.badge, .alert, .sound])
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                didReceive response: UNNotificationResponse,
-                                withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        // Print message ID.
-        print("Message ID: \(userInfo["gcm.message_id"]!)")
-        print("Key: \(userInfo["Codice"]!)")
-        print("Prezzo: \(userInfo["Prezzo"]!)")
-        print("Indirizzo: \(userInfo["Indirizzo"]!)")
-        let key = userInfo["Codice"] as! String
-        // Print full message.
-        print(userInfo)
-        var index = 0
-        for asta in self.aste {
-            if asta.key == key {
-                let indexPath = IndexPath(row: index, section: 0)
-                self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
-                break
-            }
-            index += 1
-        }
-        completionHandler()
-    }
-}
-// [END ios_10_message_handling]
 
