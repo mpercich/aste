@@ -13,6 +13,11 @@ from subprocess import call
 import os
 import zipfile
 import shutil
+import datetime
+
+start = datetime.datetime.now()
+
+print('start:', start)
 
 root = 'www.astegiudiziarie.it'
 root_url = 'https://' + root
@@ -227,6 +232,11 @@ if (common_set != set()):
 
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
+
+end = datetime.datetime.now()
+delta = end - start
+print('end:', end)
+print('delta:', delta)
 
 
 
