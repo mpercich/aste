@@ -41,13 +41,7 @@ class DetailViewController: UIViewController {
                     print("remove failed!")
                 }
                 SSZipArchive.unzipFile(atPath: sourceURL.path, toDestination: targetURL.path)
-                do {
-                    let data = try NSData(contentsOf: targetFile, options: NSData.ReadingOptions())
-                    self.webView.load(data as Data, mimeType: "text/html", textEncodingName: "UTF-8", baseURL: targetURL);
-                }
-                catch {
-                    print("NSData failed!")
-                }
+                self.webView.loadRequest(URLRequest(url: targetFile))
             }
         }
         // Do any additional setup after loading the view.

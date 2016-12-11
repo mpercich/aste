@@ -156,35 +156,13 @@ for k in common_set:
 				changed_set.add(k)
 				#db.child(k).update(list(immobile.values())[0])
 			break
-for k in (removed_set | changed_set):
-	db.child(k).remove()
-for k in (new_set | changed_set):
-	for immobile in aste:
-		if (list(immobile.keys())[0] == k):
-			db.child(k).set(list(immobile.values())[0])
-			break
-if (new_set != set()):
-	print('Nuove', new_set)
-if (removed_set != set()):
-	print('Rimosse:', removed_set)
-if (common_set != set()):	
-	print('Comuni:', common_set)
-
-#with open('aste.csv', 'w') as f:  # Just use 'w' mode in 3.x
-#	w = csv.DictWriter(f, keys)
-#	w.writeheader()
-#	for immobile in aste:
-#		#result = db.child(next(iter(immobile.keys()))).set(next(iter(immobile.values())))
-#		k = dict(Codice=next(iter(immobile.keys())))
-#		v = next(iter(immobile.values()))	
-#		k.update(v)	
-#		w.writerow(k)
 
 storage = firebase.storage()
-
 push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8')
-
 registration_id = 'Xsz-7-qxs0:APA91bGowRZ0369CGUCnLSEpE2Kmo8dfB3riIjUcwoEMCcnT1FDC6Jia-rR47UVEoVU4ZnO1G8D35VhLFuq_t_qEaSqa8Wsuz5n1Dq6nehmFlDiYICtNqOQhSRLc5vmoUqLTCqZ-EujZ'
+
+for k in (removed_set | changed_set):
+	db.child(k).remove()
 
 for k in (new_set | changed_set):
 	for immobile in aste:
@@ -221,19 +199,30 @@ for k in (new_set | changed_set):
 			zipf.close()
 			shutil.rmtree(download_path)
 			storage.child(zip_name).put(zip_path)
+			db.child(k).set(list(immobile.values())[0])
+			if k in new_set:
+				title = 'Nuova asta'
+			else:
+				title = 'Asta modificata'
+			send_notification(title, k, immobile[k])
 			break
 
-for k in new_set:
-	for immobile in aste:
-		if (list(immobile.keys())[0] == k):
-#send_notification('Nuova asta', k, immobile[k])
-			break
+if (new_set != set()):
+	print('Nuove', new_set)
+if (removed_set != set()):
+	print('Rimosse:', removed_set)
+if (common_set != set()):	
+	print('Comuni:', common_set)
 
-for k in changed_set:
-	for immobile in aste:
-		if (list(immobile.keys())[0] == k):
-#send_notification('Asta modificata', k, immobile[k])
-			break
+#with open('aste.csv', 'w') as f:  # Just use 'w' mode in 3.x
+#	w = csv.DictWriter(f, keys)
+#	w.writeheader()
+#	for immobile in aste:
+#		#result = db.child(next(iter(immobile.keys()))).set(next(iter(immobile.values())))
+#		k = dict(Codice=next(iter(immobile.keys())))
+#		v = next(iter(immobile.values()))	
+#		k.update(v)	
+#		w.writerow(k)
 
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
