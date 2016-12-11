@@ -100,7 +100,6 @@ def send_notification(message_title, key, immobile):
 	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message)
 
 def zipdir(path, ziph):
-	print(path)
 	abs_src = os.path.abspath(path)
 	for root, dirs, files in os.walk(path):
 		for file in files:
@@ -177,8 +176,7 @@ if (common_set != set()):
 #		k.update(v)	
 #		w.writerow(k)
 
-#storage = firebase.storage()
-#storage.child('aste.csv').put('aste.csv')
+storage = firebase.storage()
 
 push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8')
 
@@ -219,10 +217,13 @@ for k in changed_set:
 				content_file.write(str(soup))
 				content_file.truncate()
 				content_file.close()
-			zipf = zipfile.ZipFile(dest + '/' + k + '.zip', 'w', zipfile.ZIP_DEFLATED)
+			zip_name = k + '.zip'
+			zip_path = dest + '/' + zip_name
+			zipf = zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED)
 			zipdir(download_path, zipf)
 			zipf.close()
 			shutil.rmtree(download_path)
+			storage.child(zip_name).put(zip_path)
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
 

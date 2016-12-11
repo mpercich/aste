@@ -32,7 +32,7 @@ class MapController: UIViewController {
     lazy var price: String? = TableViewController.formatPrice(value: self.asta?.childSnapshot(forPath: "Prezzo").value)
     
     override var prefersStatusBarHidden: Bool {
-        get {
+        get {            
             return false
         }
     }
@@ -50,6 +50,13 @@ class MapController: UIViewController {
         mapView.setRegion(region, animated: true)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "ShowDetail" ) {
+            let detail = segue.destination as! DetailViewController
+            detail.key = self.asta?.key
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         locationManager.requestAlwaysAuthorization()
@@ -61,6 +68,7 @@ class MapController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 }
     
 // MARK: - CLLocationManagerDelegate
@@ -86,6 +94,40 @@ extension MapController: CLLocationManagerDelegate {
             }
         }
     }
+}
+
+// MARK: - MKMapViewDelegate
+extension MapController : MKMapViewDelegate {
+
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView?.canShowCallout = true
+            pinView?.animatesDrop = true
+            pinView?.pinTintColor = MKPinAnnotationView.redPinColor()
+            pinView?.rightCalloutAccessoryView = UIButton(type: UIButtonType.detailDisclosure)
+        }
+        else {
+            pinView?.annotation = annotation
+        }
+        
+        return pinView
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if control == view.rightCalloutAccessoryView {
+            performSegue(withIdentifier: "ShowDetail", sender: view)
+        }
+    }
+    
 }
 
     /*
