@@ -9,13 +9,20 @@ import re
 import sys
 import locale
 from pyfcm import FCMNotification
+from subprocess import call
+import os
+import zipfile
+import shutil
+
+root = 'www.astegiudiziarie.it'
+root_url = 'https://' + root
 
 def send_request(body):
 	global payload
 	s = Session()
 	proxies = {'https': 'https://us00749:Korcula1@proxymil.internal.unicredit.eu:80'}
 	headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': str(len(body)), 'Accept-Encoding': 'utf-8'}
-	req = Request('POST', 'https://www.astegiudiziarie.it/default.aspx', headers=headers)
+	req = Request('POST', root_url + '/default.aspx', headers=headers)
 	prepped = req.prepare()
 	prepped.body = body 
 	#response = s.send(prepped, proxies=proxies, verify=False)
@@ -92,7 +99,14 @@ def send_notification(message_title, key, immobile):
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
 	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message)
 
-
+def zipdir(path, ziph):
+	print(path)
+	abs_src = os.path.abspath(path)
+	for root, dirs, files in os.walk(path):
+		for file in files:
+			absname = os.path.abspath(os.path.join(root, file))
+			arcname = absname[len(abs_src) + 1:]
+			ziph.write(absname, arcname)
 
 config = {
   'apiKey': 'AIzaSyDdiBn8Y6ymkGwFbWvy-toDDZvGwfJT_-o',
@@ -178,6 +192,37 @@ for k in changed_set:
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			send_notification('Asta modificata', k, immobile[k])
+
+for k in changed_set:
+	for immobile in aste:
+		if (list(immobile.keys())[0] == k):
+			url = root_url + immobile[k]['Link']
+			dest = os.path.dirname(os.getcwd())
+			call(['wget', '-p', '-q', '-k', '-N', '-P' + dest, '--restrict-file-names=windows', url])
+			download_path = dest + '/' + root
+			main = [filename for filename in os.listdir(download_path) if filename.startswith('seconda')]
+			main_file = download_path + '/' + main[0]
+			with open(main_file, 'r+') as content_file:
+				content = content_file.read()
+				soup = BeautifulSoup(content, 'html.parser')
+				try:
+					soup.find('div', id='banner_cookie').decompose()
+				except:
+					pass
+				[res.decompose() for res in soup.findAll('div', id='header')]
+				[res.decompose() for res in soup.findAll('div', id='wrapper')]
+				[res.decompose() for res in soup.findAll('div', id='footer')]
+				[res.decompose() for res in soup.findAll('div', {'class': 'DivH1'})]
+				[res.decompose() for res in soup.findAll('div', {'class': 'DivPreferito'})]
+				[res.decompose() for res in soup.findAll('p', {'class': 'WarningDocNA'})]
+				content_file.seek(0)
+				content_file.write(str(soup))
+				content_file.truncate()
+				content_file.close()
+			zipf = zipfile.ZipFile(dest + '/' + k + '.zip', 'w', zipfile.ZIP_DEFLATED)
+			zipdir(download_path, zipf)
+			zipf.close()
+			shutil.rmtree(download_path)
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
 

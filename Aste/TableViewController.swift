@@ -34,20 +34,12 @@ class TableViewController: UITableViewController {
             for snap in snapshot.children {
                 self.insertRow(content: snap as! FIRDataSnapshot)
             }
-            if let row = self.rowToScroll {
-                let index = self.indexByKey(key: row)
-                let indexPath = IndexPath(row: index, section: 0)
-                self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
-                self.rowToScroll = nil
-            }
+            self.scroll()
         })
         asteRef.observe(.childAdded, with: { (snapshot) -> Void in
             if (!ignoreItems) {
                 self.insertRow(content: snapshot)
             }
-//            let index = self.indexByPrice(snapshot: snapshot)
-//            self.aste.insert(snapshot, at: index)
-//            self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
         })
         // Listen for deleted aste in the Firebase database
         asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
@@ -83,14 +75,7 @@ class TableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         print("viewWillAppear")
         super.viewWillAppear(animated)
-        if aste.count > 0 {
-            if let row = self.rowToScroll {
-                let index = self.indexByKey(key: row)
-                let indexPath = IndexPath(row: index, section: 0)
-                self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
-                self.rowToScroll = nil
-            }            
-        }
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -99,6 +84,15 @@ class TableViewController: UITableViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+    }
+    
+    func scroll() {
+        if let row = self.rowToScroll {
+            let index = self.indexByKey(key: row)
+            let indexPath = IndexPath(row: index, section: 0)
+            self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
+            self.rowToScroll = nil
+        }
     }
     
     func insertRow(content: FIRDataSnapshot)

@@ -176,6 +176,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
         let tableViewController = nav.topViewController as! TableViewController
         tableViewController.rowToScroll = key as String?
+        if tableViewController.aste.count > 0 {
+            tableViewController.scroll()
+        }
         completionHandler()
     }
 }
