@@ -8,8 +8,12 @@
 
 import UIKit
 import FirebaseStorage
+import SSZipArchive
 
 class DetailViewController: UIViewController {
+
+    // MARK: Properties
+    @IBOutlet weak var webView: UIWebView!
 
     var key: String = ""
 
@@ -22,24 +26,42 @@ class DetailViewController: UIViewController {
         let storageRef = storage.reference(forURL: "gs://aste-404d3.appspot.com")
         let fileName = key + ".zip"
         let astaRef = storageRef.child(fileName)
-        let localURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName) as URL!
-        // Download to the local filesystem
-        
-        let downloadTask = astaRef.write(toFile: localURL) { (URL, error) -> Void in
+        let sourceURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName) as URL!
+        let targetURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(key) as URL!
+        let targetFile: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(key)?.appendingPathComponent("main.html") as URL!
+        // Download to the local filesystem        
+        astaRef.write(toFile: sourceURL) { (URL, error) -> Void in
             if (error != nil) {
-                // Uh-oh, an error occurred!
+                return
             } else {
-                // Local file URL for "images/island.jpg" is returned
+                do {
+                    try FileManager.default.removeItem(at: targetURL)
+                }
+                catch {
+                    print("remove failed!")
+                }
+                SSZipArchive.unzipFile(atPath: sourceURL.path, toDestination: targetURL.path)
+                do {
+                    let data = try NSData(contentsOf: targetFile, options: NSData.ReadingOptions())
+                    self.webView.load(data as Data, mimeType: "text/html", textEncodingName: "UTF-8", baseURL: targetURL);
+                }
+                catch {
+                    print("NSData failed!")
+                }
             }
         }
-        
-
         // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        get {
+            return false
+        }
     }
     
 
@@ -53,4 +75,35 @@ class DetailViewController: UIViewController {
     }
     */
 
+}
+
+// MARK: - UIWebViewDelegate
+extension DetailViewController : UIWebViewDelegate {
+    
+    func webViewDidFinishLoad(_ webView: UIWebView) {
+        webView.isHidden = false
+    }
+
+    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+        print(error)
+    }
+    
+    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        print(request)
+        var url = request.url
+        let urlString = request.url?.path
+        if !(urlString?.hasSuffix(key))! && !(urlString?.hasSuffix(".pdf"))! && !(urlString?.hasSuffix(".html"))!  {
+            url = url?.appendingPathExtension("pdf")
+            do {
+                try FileManager.default.moveItem(at: request.url!, to: url!)
+            }
+            catch {
+                print("rename failed!")
+                return true
+            }
+            webView.loadRequest(URLRequest(url: url!))
+            return false
+        }
+        return true
+    }
 }

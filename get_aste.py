@@ -186,21 +186,19 @@ for k in new_set:
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			send_notification('Nuova asta', k, immobile[k])
-for k in changed_set:
-	for immobile in aste:
-		if (list(immobile.keys())[0] == k):
-			send_notification('Asta modificata', k, immobile[k])
-
+			
 for k in changed_set:
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			url = root_url + immobile[k]['Link']
 			dest = os.path.dirname(os.getcwd())
-			call(['wget', '-p', '-q', '-k', '-N', '-P' + dest, '--restrict-file-names=windows', url])
+			call(['wget', '-p', '-q', '-k', '-e robots=off', '-E', '-r', '-l1', '-P' + dest, '--restrict-file-names=windows', url])
 			download_path = dest + '/' + root
 			main = [filename for filename in os.listdir(download_path) if filename.startswith('seconda')]
 			main_file = download_path + '/' + main[0]
-			with open(main_file, 'r+') as content_file:
+			renamed_file = download_path + '/' + "main.html"
+			os.rename(main_file, renamed_file)
+			with open(renamed_file, 'r+') as content_file:
 				content = content_file.read()
 				soup = BeautifulSoup(content, 'html.parser')
 				try:
@@ -224,6 +222,7 @@ for k in changed_set:
 			zipf.close()
 			shutil.rmtree(download_path)
 			storage.child(zip_name).put(zip_path)
+			send_notification('Asta modificata', k, immobile[k])
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
 
