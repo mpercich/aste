@@ -136,8 +136,12 @@ while True:
 	search = '__SCROLLPOSITIONX=0&__SCROLLPOSITIONY=0&__EVENTTARGET=&__EVENTARGUMENT=&ctl00%24ContentPlaceHolder1%24Primasel2_1%24dlstPrimasel%24ctl50%24drpdPaginazione=1&ctl00%24ContentPlaceHolder1%24Primasel2_1%24dlstPrimasel%24ctl50%24btnSuccessiva=Pagina+successiva'
 	if 'successiva' not in response.text:
 		break
+
 set_aste = set([k for immobile in aste for k in immobile.keys()]);
-set_db = set(db_keys.val())
+if db_keys.val() is None:
+	set_db = set()
+else:
+	set_db = db_keys.val()
 
 new_set = set_aste - set_db
 removed_set = set_db - set_aste
@@ -182,12 +186,7 @@ push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8'
 
 registration_id = 'Xsz-7-qxs0:APA91bGowRZ0369CGUCnLSEpE2Kmo8dfB3riIjUcwoEMCcnT1FDC6Jia-rR47UVEoVU4ZnO1G8D35VhLFuq_t_qEaSqa8Wsuz5n1Dq6nehmFlDiYICtNqOQhSRLc5vmoUqLTCqZ-EujZ'
 
-for k in new_set:
-	for immobile in aste:
-		if (list(immobile.keys())[0] == k):
-			send_notification('Nuova asta', k, immobile[k])
-			
-for k in changed_set:
+for k in (new_set | changed_set):
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			url = root_url + immobile[k]['Link']
@@ -222,7 +221,20 @@ for k in changed_set:
 			zipf.close()
 			shutil.rmtree(download_path)
 			storage.child(zip_name).put(zip_path)
-			send_notification('Asta modificata', k, immobile[k])
+			break
+
+for k in new_set:
+	for immobile in aste:
+		if (list(immobile.keys())[0] == k):
+#send_notification('Nuova asta', k, immobile[k])
+			break
+
+for k in changed_set:
+	for immobile in aste:
+		if (list(immobile.keys())[0] == k):
+#send_notification('Asta modificata', k, immobile[k])
+			break
+
 
 print('Totali:', str(len(aste)), '\nNuove:', str(len(new_set)), '\nModificate:', str(len(changed_set)), '\nRimosse:', str(len(removed_set)))
 
