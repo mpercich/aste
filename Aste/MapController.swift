@@ -53,7 +53,7 @@ class MapController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "ShowDetail" ) {
             let detail = segue.destination as! DetailViewController
-            detail.key = self.asta?.key
+            detail.key = (self.asta?.key)!
         }
     }
     
@@ -124,7 +124,9 @@ extension MapController : MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            performSegue(withIdentifier: "ShowDetail", sender: view)
+            if self.asta?.key != nil {
+                performSegue(withIdentifier: "ShowDetail", sender: view)
+            }
         }
     }
     

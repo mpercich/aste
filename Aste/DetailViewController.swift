@@ -7,11 +7,11 @@
 //
 
 import UIKit
-import FIRStorage
+import FirebaseStorage
 
 class DetailViewController: UIViewController {
 
-    var key: String?
+    var key: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,8 +19,20 @@ class DetailViewController: UIViewController {
         // Create a reference with an initial file path and name
         let storage = FIRStorage.storage()
         // Create a storage reference from our storage service
-        let storageRef = storage.referenceForURL("gs://aste-404d3.appspot.com")
-        let astaRef = storageRef.child(key)
+        let storageRef = storage.reference(forURL: "gs://aste-404d3.appspot.com")
+        let fileName = key + ".zip"
+        let astaRef = storageRef.child(fileName)
+        let localURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName) as URL!
+        // Download to the local filesystem
+        
+        let downloadTask = astaRef.write(toFile: localURL) { (URL, error) -> Void in
+            if (error != nil) {
+                // Uh-oh, an error occurred!
+            } else {
+                // Local file URL for "images/island.jpg" is returned
+            }
+        }
+        
 
         // Do any additional setup after loading the view.
     }
