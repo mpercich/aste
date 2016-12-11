@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FIRStorage
 
 class DetailViewController: UIViewController {
 
@@ -15,6 +16,11 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = key
+        // Create a reference with an initial file path and name
+        let storage = FIRStorage.storage()
+        // Create a storage reference from our storage service
+        let storageRef = storage.referenceForURL("gs://aste-404d3.appspot.com")
+        let astaRef = storageRef.child(key)
 
         // Do any additional setup after loading the view.
     }

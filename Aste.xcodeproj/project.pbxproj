@@ -93,16 +93,16 @@
 			isa = PBXGroup;
 			children = (
 				D11C37271DE8DF7700BAF846 /* Aste.entitlements */,
+				D15BEC601DD2608C00E58050 /* Main.storyboard */,
 				D15BEC5C1DD2608C00E58050 /* AppDelegate.swift */,
 				D1DA4A091DE7759A00C6A060 /* TableViewCell.swift */,
-				D15BEC601DD2608C00E58050 /* Main.storyboard */,
-				D1289DE31DFCE11900ECBEA5 /* DetailViewController.swift */,
+				D1DA4A071DE6268300C6A060 /* TableViewController.swift */,
 				D1DA4A0D1DE7B53F00C6A060 /* MapController.swift */,
+				D1289DE31DFCE11900ECBEA5 /* DetailViewController.swift */,
 				D15BEC631DD2608C00E58050 /* Assets.xcassets */,
 				D15BEC651DD2608C00E58050 /* LaunchScreen.storyboard */,
 				D15BEC681DD2608C00E58050 /* Info.plist */,
 				D14A5B6B1DD26AFD00226EE3 /* GoogleService-Info.plist */,
-				D1DA4A071DE6268300C6A060 /* TableViewController.swift */,
 			);
 			path = Aste;
 			sourceTree = "<group>";
