@@ -106,6 +106,7 @@
                     <navigationItem key="navigationItem" title="Aste" id="7Q2-O0-xb1"/>
                     <connections>
                         <segue destination="M5Q-ef-R7O" kind="show" identifier="ShowMap" id="vt9-EK-J9R"/>
+                        <segue destination="TfW-jr-vt2" kind="show" identifier="ShowDetail" id="LLJ-9K-icn"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Hx-WA-lW8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -141,7 +142,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a5e-92-7RZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2540" y="-2.2488755622188905"/>
+            <point key="canvasLocation" x="2503" y="-403"/>
         </scene>
         <!--Detail View Controller-->
         <scene sceneID="c55-j6-axt">
@@ -173,7 +174,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lPa-zD-oIN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3292" y="-2.2488755622188905"/>
+            <point key="canvasLocation" x="3292" y="-25"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="42I-OB-2Ci">
@@ -194,4 +195,7 @@
             <point key="canvasLocation" x="773.60000000000002" y="-2.2488755622188905"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="93s-yY-lbF"/>
+    </inferredMetricsTieBreakers>
 </document>

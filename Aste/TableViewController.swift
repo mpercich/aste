@@ -174,19 +174,25 @@ class TableViewController: UITableViewController {
         // You can get a reference to the data by using indexPath shown below
         tableView.deselectRow(at: indexPath, animated: true)
         selectedAsta = aste[indexPath.row]
-        
-        // Create an instance of PlayerTableViewController and pass the variable
-        
-        
-        // Let's assume that the segue name is called playerSegue
-        // This will perform the segue and pre-load the variable for you to use
-        self.performSegue(withIdentifier: "ShowMap", sender: self)
-
+        var segueIdentifier: String
+        if ((selectedAsta?.childSnapshot(forPath: "Coordinate").value as? String) != nil)  {
+            segueIdentifier = "ShowMap"
+        } else {
+            segueIdentifier = "ShowDetail"
+        }
+        self.performSegue(withIdentifier: segueIdentifier, sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destinationVC = segue.destination as! MapController
-        destinationVC.asta = selectedAsta
+        switch segue.identifier! {
+            case "ShowMap":
+                let destinationVC: MapController = segue.destination as! MapController
+                destinationVC.asta = selectedAsta
+            case "ShowDetail":
+                let destinationVC: DetailViewController = segue.destination as! DetailViewController
+                destinationVC.key = (selectedAsta?.key)!
+            default: break
+        }
     }
 
     class func formatPrice(value: Any?) -> String {

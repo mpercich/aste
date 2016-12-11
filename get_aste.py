@@ -163,6 +163,7 @@ registration_id = 'Xsz-7-qxs0:APA91bGowRZ0369CGUCnLSEpE2Kmo8dfB3riIjUcwoEMCcnT1F
 
 for k in (removed_set | changed_set):
 	db.child(k).remove()
+	storage.child(k + '.zip').remove
 
 for k in (new_set | changed_set):
 	for immobile in aste:
@@ -173,7 +174,7 @@ for k in (new_set | changed_set):
 			download_path = dest + '/' + root
 			main = [filename for filename in os.listdir(download_path) if filename.startswith('seconda')]
 			main_file = download_path + '/' + main[0]
-			renamed_file = download_path + '/' + "main.html"
+			renamed_file = download_path + '/' + 'main.html'
 			os.rename(main_file, renamed_file)
 			with open(renamed_file, 'r+') as content_file:
 				content = content_file.read()
