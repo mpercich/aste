@@ -34,6 +34,7 @@
 		D15BEC661DD2608C00E58050 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D15BEC681DD2608C00E58050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D193287E1E02982E00FC3FEB /* parse site.scpt */ = {isa = PBXFileReference; lastKnownFileType = file; path = "parse site.scpt"; sourceTree = "<group>"; };
+		D193287F1E0313EA00FC3FEB /* serviceAccountKey.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = serviceAccountKey.json; sourceTree = "<group>"; };
 		D1DA4A071DE6268300C6A060 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		D1DA4A091DE7759A00C6A060 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		D1DA4A0B1DE7B18E00C6A060 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -67,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				D193287E1E02982E00FC3FEB /* parse site.scpt */,
+				D193287F1E0313EA00FC3FEB /* serviceAccountKey.json */,
 				49E076A91DE6E1A800384A49 /* get_aste.py */,
 			);
 			name = Scripts;

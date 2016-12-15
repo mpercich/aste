@@ -117,7 +117,7 @@ config = {
   'authDomain': 'aste-404d3.firebaseapp.com',
   'databaseURL': 'https://aste-404d3.firebaseio.com/',
   'storageBucket': 'aste-404d3.appspot.com',
-  'serviceAccount': ''
+  'serviceAccount': 'serviceAccountKey.json'
 }
 
 
@@ -167,7 +167,6 @@ push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8'
 registration_id = 'Xsz-7-qxs0:APA91bGowRZ0369CGUCnLSEpE2Kmo8dfB3riIjUcwoEMCcnT1FDC6Jia-rR47UVEoVU4ZnO1G8D35VhLFuq_t_qEaSqa8Wsuz5n1Dq6nehmFlDiYICtNqOQhSRLc5vmoUqLTCqZ-EujZ'
 
 for k in (removed_set | changed_set):
-	print("to be removed: " + k)
 	storage.delete(k + '.zip')
 	db.child(k).remove()
 
