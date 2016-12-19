@@ -9,5 +9,6 @@ target 'Aste' do
     pod 'Firebase/Messaging'
     pod 'Firebase/Storage'
     pod 'SSZipArchive'
+    pod 'Firebase/Auth'
 end
 
