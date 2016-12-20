@@ -16,7 +16,7 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let AUTH_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2MDgzMDc4ZGQxMzc4NzgxZjMxYzI2ZjVkZWNjMzIzYTM0OTVlZWIiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTQ4MjE5MDE1MywiaWF0IjoxNDgyMTg2NTUzLCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1scmEyY0Bhc3RlLTQwNGQzLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbHJhMmNAYXN0ZS00MDRkMy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVzZXJfaWQiOiJhZG1pbiIsInNjb3BlIjoiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC9pZGVudGl0eXRvb2xraXQifQ.swEY1tcPpKMnqa4Jw2W9_9-8Cd1bXLLfsvnX8ldnY7iRTRduwSWCBKjnoIbvaNjdY2PlqMO2rYIRPxKMTGMX_egDq7Y9vhFWEswWHlLiEppnnMwI8bMiUgeqQBiZNYDMqxNlVBMtHC2ibFIrDC_MEkOYPjowaY2WrCmFKdjNATuYkCPEoljn2pGxxcxtEyJ9Xu85qarW0fZWh7RtDx0kWK3gO3gbdQZlbMZpAymF7tapROwRqAM3lIZIWvntQtAiUAA5ratdJcyIfp5vSe3arncJJyErB9ah5tBKQxXLAf2zmiRD1DwbmrYzV7fkohknKyoWxQ285DyggIiR7424wQ"
+    let AUTH_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2MDgzMDc4ZGQxMzc4NzgxZjMxYzI2ZjVkZWNjMzIzYTM0OTVlZWIiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTQ4MjE5NjYyNywiaWF0IjoxNDgyMTkzMDI3LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1scmEyY0Bhc3RlLTQwNGQzLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbHJhMmNAYXN0ZS00MDRkMy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVzZXJfaWQiOiJhZG1pbiIsInNjb3BlIjoiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC9pZGVudGl0eXRvb2xraXQifQ.ml49DK1nSod6zt0z__DGuPtMHem7Va7j7bDUMZRYaKTPFsay-Kw5TKLtxyL3wBNoURxwPH06G0hMprVKFlkAao0o88AHBhUJYSPa5mhgm9GrC75e1yKzJR25-lWZXIeDKgSRq2LjoWxbGOv9QPIU6MK1ZIQepIRwbSi0LoMkTlNqlxZGIdtUxatGhEYEQrjqlrdDy6IrN1o4uHfw5Xh6ynaUXUMjFDREliAt24GgdSD0eDslxg0ohBKCM66qWdXo7HNHNGnQevWMyujnLa7a0vhZLWp-83FLzz-mfRf4NfsMQv_akUvvn-XV-U-PX_svtUd_aqG8cThmxtwoapjf9w"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -39,11 +39,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerForRemoteNotifications()
         FIRApp.configure();
         let firebaseAuth = FIRAuth.auth()
-        do {
-            try firebaseAuth?.signOut()
-        } catch let signOutError as NSError {
-            print ("Error signing out: %@", signOutError)
-        }
+//        do {
+//            try firebaseAuth?.signOut()
+//        } catch let signOutError as NSError {
+//            print ("Error signing out: %@", signOutError)
+//        }
         firebaseAuth?.signIn(withCustomToken: AUTH_TOKEN, completion: { (user, error) in
             if let error = error {
                 print("Authentication failed with error: \(error.localizedDescription)")
