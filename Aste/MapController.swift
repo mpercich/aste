@@ -68,7 +68,6 @@ class MapController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 }
     
 // MARK: - CLLocationManagerDelegate
@@ -97,7 +96,7 @@ extension MapController: CLLocationManagerDelegate {
 }
 
 // MARK: - MKMapViewDelegate
-extension MapController : MKMapViewDelegate {
+extension MapController: MKMapViewDelegate {
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         

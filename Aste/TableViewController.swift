@@ -50,7 +50,7 @@ class TableViewController: UITableViewController {
         // [END child_event_listener]
         // [START post_value_event_listener]
         //        refHandle = asteQuery?.observe(.value, with: { (snapshot) in
-        //            let asteDict = snapshot.value as? [String : AnyObject] ?? [:]
+        //            let asteDict = snapshot.value as? [String: AnyObject] ?? [:]
         //            for snap in asteDict
         //            {
         //                self.aste.append(snap)
@@ -95,8 +95,7 @@ class TableViewController: UITableViewController {
         }
     }
     
-    func insertRow(content: FIRDataSnapshot)
-    {
+    func insertRow(content: FIRDataSnapshot) {
         let index = self.indexBySnapshotPrice(snapshot: content)
         self.aste.insert(content, at: index)
         self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
@@ -180,17 +179,22 @@ class TableViewController: UITableViewController {
         } else {
             segueIdentifier = "ShowDetail"
         }
-        self.performSegue(withIdentifier: segueIdentifier, sender: self)
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: segueIdentifier, sender: self)
+        }        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier! {
             case "ShowMap":
-                let destinationVC: MapController = segue.destination as! MapController
-                destinationVC.asta = selectedAsta
+                if let destinationVC = segue.destination as? MapController {
+                    destinationVC.asta = selectedAsta
+                }
             case "ShowDetail":
-                let destinationVC: DetailViewController = segue.destination as! DetailViewController
-                destinationVC.key = (selectedAsta?.key)!
+                if let destinationVC = segue.destination as? DetailViewController {
+                    destinationVC.key = (selectedAsta?.key)
+                    print("\(destinationVC.key)")
+                }
             default: break
         }
     }

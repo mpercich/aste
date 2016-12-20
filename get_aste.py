@@ -97,7 +97,7 @@ def send_notification(message_title, key, immobile):
 			'Codice' : k,
 			'Prezzo' : immobile['Prezzo'],
 			'Indirizzo' : immobile['Indirizzo']
-			}
+		}
 	except:
 		return
 	print(message_title, key, data_message)

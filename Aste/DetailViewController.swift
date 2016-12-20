@@ -9,13 +9,12 @@
 import UIKit
 import FirebaseStorage
 import SSZipArchive
+import WebKit
 
 class DetailViewController: UIViewController {
 
-    // MARK: Properties
-    @IBOutlet weak var webView: UIWebView!
-
-    var key: String = ""
+    var webView: WKWebView!
+    var key: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,12 +40,19 @@ class DetailViewController: UIViewController {
                     print("remove failed!")
                 }
                 SSZipArchive.unzipFile(atPath: sourceURL.path, toDestination: targetURL.path)
-                self.webView.loadRequest(URLRequest(url: targetFile))
+                self.webView.loadFileURL(targetFile, allowingReadAccessTo: targetFile)
             }
         }
         // Do any additional setup after loading the view.
     }
 
+    override func loadView() {
+        super.loadView()
+        webView = WKWebView()
+        webView.navigationDelegate = self
+        view = webView!
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -72,32 +78,35 @@ class DetailViewController: UIViewController {
 }
 
 // MARK: - UIWebViewDelegate
-extension DetailViewController : UIWebViewDelegate {
+extension DetailViewController: WKNavigationDelegate {
     
-    func webViewDidFinishLoad(_ webView: UIWebView) {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.isHidden = false
     }
 
-    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
-        print(error)
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation, withError error: Error) {
+        print("webView:\(webView) didFailNavigation:\(navigation) withError:\(error)")
     }
     
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        print(request)
-        var url = request.url
-        let urlString = request.url?.path
-        if !(urlString?.hasSuffix(key))! && !(urlString?.hasSuffix(".pdf"))! && !(urlString?.hasSuffix(".html"))!  {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping ((WKNavigationActionPolicy) -> Void)) {
+        print(navigationAction.request)
+        var url = navigationAction.request.url
+        let urlString = navigationAction.request.url?.path
+        if !(urlString?.hasSuffix(key))! && !(urlString?.hasSuffix(".pdf"))! && !(urlString?.hasSuffix(".html"))! && !(urlString?.hasSuffix(".aspx"))!  {
             url = url?.appendingPathExtension("pdf")
             do {
-                try FileManager.default.moveItem(at: request.url!, to: url!)
+                try FileManager.default.moveItem(at: navigationAction.request.url!, to: url!)
             }
             catch {
                 print("rename failed!")
-                return true
+                decisionHandler(.cancel)
+                return
             }
-            webView.loadRequest(URLRequest(url: url!))
-            return false
+            webView.load(URLRequest(url: url!))
+            decisionHandler(.cancel)
+            return
         }
-        return true
+        decisionHandler(.allow)
+        return
     }
 }
