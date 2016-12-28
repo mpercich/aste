@@ -19,15 +19,13 @@ class TableViewController: UITableViewController {
     var refHandle: FIRDatabaseHandle?
     var selectedAsta: FIRDataSnapshot?
     var rowToScroll: String?
-    var read = Set<String>()
+    var read: Array<String> = []
     
     override func viewDidLoad() {
         print("viewDidLoad")
         super.viewDidLoad()
         let defaults = UserDefaults.standard
-        if let savedRead = defaults.object(forKey: "Read") as? [String] {
-            read = Set(savedRead)
-        }
+        read = defaults.object(forKey: "Read") as! Array<String>
         aste.removeAll()
         self.tableView.reloadData()
         var ignoreItems = true;
@@ -188,15 +186,16 @@ class TableViewController: UITableViewController {
         switch sender.direction {
         case UISwipeGestureRecognizerDirection.right:
             cell?.contentView.layer.opacity = 1
-            read.remove(aste[(indexPath?.row)!].key)
+            if let index = read.index(of: aste[(indexPath?.row)!].key) {
+                read.remove(at: index)
+            }
         case UISwipeGestureRecognizerDirection.left:
             cell?.contentView.layer.opacity = 0.5
-            read.insert(aste[(indexPath?.row)!].key)
+            read.append(aste[(indexPath?.row)!].key)
         default:
             break
-        }
-        let array = Array(read)
-        defaults.set(array, forKey: "Read")
+        }        
+        defaults.set(read, forKey: "Read")
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
