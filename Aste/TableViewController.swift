@@ -19,10 +19,15 @@ class TableViewController: UITableViewController {
     var refHandle: FIRDatabaseHandle?
     var selectedAsta: FIRDataSnapshot?
     var rowToScroll: String?
+    var read = Set<String>()
     
     override func viewDidLoad() {
         print("viewDidLoad")
         super.viewDidLoad()
+        let defaults = UserDefaults.standard
+        if let savedRead = defaults.object(forKey: "Read") as? [String] {
+            read = Set(savedRead)
+        }
         aste.removeAll()
         self.tableView.reloadData()
         var ignoreItems = true;
@@ -156,7 +161,6 @@ class TableViewController: UITableViewController {
 
         // Configure the cell...
         cell.key.text = aste[indexPath.row].key
-        let prezzo = TableViewController.formatPrice(value: aste[indexPath.row].childSnapshot(forPath: "Prezzo").value)
         cell.price.text = TableViewController.formatPrice(value: aste[indexPath.row].childSnapshot(forPath: "Prezzo").value)
         cell.date.text = aste[indexPath.row].childSnapshot(forPath: "Data").value as? String
         cell.type.text = aste[indexPath.row].childSnapshot(forPath: "Tipologia").value as? String
@@ -164,8 +168,35 @@ class TableViewController: UITableViewController {
         cell.sale.text = aste[indexPath.row].childSnapshot(forPath: "Vendita").value as? String
         cell.address.text = aste[indexPath.row].childSnapshot(forPath: "Indirizzo").value as? String
         cell.attachment.text = aste[indexPath.row].childSnapshot(forPath: "Allegati").value as? String
-        print("\(indexPath.row) \(prezzo)")
+        var swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
+        cell.addGestureRecognizer(swipeGesture)
+        swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
+        swipeGesture.direction = UISwipeGestureRecognizerDirection.left
+        cell.addGestureRecognizer(swipeGesture)
+        cell.contentView.layer.opacity = 1
+        if (read.contains(aste[indexPath.row].key)) {
+            cell.contentView.layer.opacity = 0.5
+        }
         return cell
+    }
+    
+    func cellSwipped(sender: UISwipeGestureRecognizer) {
+        let swipeLocation = sender.location(in: self.tableView)
+        let indexPath = self.tableView.indexPathForRow(at: swipeLocation)
+        let cell = self.tableView.cellForRow(at: indexPath!)
+        let defaults = UserDefaults.standard
+        switch sender.direction {
+        case UISwipeGestureRecognizerDirection.right:
+            cell?.contentView.layer.opacity = 1
+            read.remove(aste[(indexPath?.row)!].key)
+        case UISwipeGestureRecognizerDirection.left:
+            cell?.contentView.layer.opacity = 0.5
+            read.insert(aste[(indexPath?.row)!].key)
+        default:
+            break
+        }
+        let array = Array(read)
+        defaults.set(array, forKey: "Read")
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
