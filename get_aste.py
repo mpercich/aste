@@ -84,6 +84,11 @@ def grab(parameters, list):
 			if geocode_result:
 				temp.append(geocode_result[0]['formatted_address'])
 				temp.append(str(geocode_result[0]['geometry']['location']['lat']) + ',' + str(geocode_result[0]['geometry']['location']['lng']))
+			else:
+				print(temp[keys.index('Codice')], 'no geocode:', found.group(1))
+				temp.append(found.group(1))
+		else:
+			print(temp[keys.index('Codice')], 'indirizzo non trovato:', temp[keys.index('Descrizione')])
 		for x, tag in enumerate(temp):
 			#print(keys[x], tag)
 			if x == 0:
@@ -106,7 +111,7 @@ def send_notification(message_title, key, immobile):
 		return
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
 	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
-	print(message_title, key, data_message, result)
+	print(message_title, key, data_message, result[0]['results'])
 
 def zipdir(path, ziph):
 	abs_src = os.path.abspath(path)
@@ -161,14 +166,13 @@ for k in common_set:
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
 			item = db.child(k).get().val()
-			if (set(item.values()) - set(list(immobile.values())[0].values()) != set()):
+			if (set(item.values()) != set(list(immobile.values())[0].values())):
 				changed_set.add(k)
-				#db.child(k).update(list(immobile.values())[0])
 			break
 
 storage = firebase.storage()
 push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8')
-registration_id = 'cWl2NPamvf0:APA91bFXQW9lZgi4g1NrYmA1W-mDErrZ0lSy_lVM4aR1TPZJZP598SgK78xwx0FdlOrtOnqZxRLEPzcTRltOwluXw-QtyEbWVi02MqK5XvDc25P8VNqejAAzpgTe1tr40LG9X87L21mv'
+registration_id = 'fe37ynctPwY:APA91bF4_-bK4ZNM_4NdaduVdkC6ZGeKcqyFY0ncepmr5LSTmZvcOfUjR8xThhjYlxcAj9E2VQLLtQmeE2XKriIIf07OI8Iy9g6a4L5PqQ9iMEJAxR4oQ2dbvBcwIvezwt6d49pgsiyp'
 
 for k in (removed_set | changed_set):
 	storage.delete(k + '.zip')
@@ -218,7 +222,7 @@ for k in (new_set | changed_set):
 			break
 
 if (new_set != set()):
-	print('Nuove', new_set)
+	print('Nuove:', new_set)
 if (removed_set != set()):
 	print('Rimosse:', removed_set)
 if (common_set != set()):	

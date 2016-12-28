@@ -66,10 +66,10 @@ class TableViewController: UITableViewController {
         // Listen for deleted aste in the Firebase database
         asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
             let index = self.indexBySnapshotKey(snapshot: snapshot)
-            self.aste.remove(at: index)
             let indexPath = IndexPath(row: index, section: 0)
-            self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
             self.removeRead(at: indexPath)
+            self.aste.remove(at: index)
+            self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
         })
     }
     
@@ -190,18 +190,19 @@ class TableViewController: UITableViewController {
             if let row = indexPath?.row {
                 if !read.contains(aste[row].key) {
                     read.append(aste[row].key)
-                    tableView.reloadRows(at: [indexPath!], with: UITableViewRowAnimation.automatic)
+                    UserDefaults.standard.set(read, forKey: "Read")
                 }
             }
         default:
             break
         }
-        UserDefaults.standard.set(read, forKey: "Read")
+        
     }
     
     func removeRead(at: IndexPath) {
         if let index = read.index(of: aste[(at.row)].key) {
             read.remove(at: index)
+            UserDefaults.standard.set(read, forKey: "Read")
         }
     }
 
