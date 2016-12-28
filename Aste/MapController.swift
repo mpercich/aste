@@ -51,9 +51,9 @@ class MapController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "ShowDetail" ) {
+        if segue.identifier == "ShowDetail" {
             let detail = segue.destination as! DetailViewController
-            detail.key = (self.asta?.key)!
+            detail.key = (asta?.key)!
         }
     }
     
@@ -61,7 +61,7 @@ class MapController: UIViewController {
         super.viewDidLoad()
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
-        self.title = address
+        title = address
     }
     
     override func didReceiveMemoryWarning() {
@@ -75,7 +75,7 @@ extension MapController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //add annotation just first time
-        if (mapView.annotations.isEmpty) {
+        if mapView.annotations.isEmpty {
             locationManager.stopUpdatingLocation()
             let userLocation = locations.first!
             mapView.showsUserLocation = true
@@ -123,7 +123,7 @@ extension MapController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         if control == view.rightCalloutAccessoryView {
-            if self.asta?.key != nil {
+            if asta?.key != nil {
                 performSegue(withIdentifier: "ShowDetail", sender: view)
             }
         }

@@ -12,6 +12,7 @@ import UserNotifications
 
 
 class TableViewController: UITableViewController {
+    
     // your data source, you can replace this with your own model if you wish
     var aste: Array<FIRDataSnapshot> = []
     lazy var asteRef: FIRDatabaseReference = FIRDatabase.database().reference()
@@ -20,19 +21,37 @@ class TableViewController: UITableViewController {
     var selectedAsta: FIRDataSnapshot?
     var rowToScroll: String?
     var read: Array<String> = []
+    lazy var hideRead: Bool =  UserDefaults.standard.bool(forKey: "HideRead")
+    let cellHeight: CGFloat = 132;
+    
+    @IBAction func leftButtonClicked(_ sender: UIBarButtonItem) {
+        hideRead = !hideRead
+        if hideRead {
+            sender.title = "Show All"
+        } else {
+            sender.title = "Hide Read"
+        }
+        UserDefaults.standard.set(hideRead, forKey: "HideRead")
+        tableView.reloadSections([0], with: UITableViewRowAnimation.automatic)
+    }
     
     override func viewDidLoad() {
         print("viewDidLoad")
         super.viewDidLoad()
-        let defaults = UserDefaults.standard
-        read = defaults.object(forKey: "Read") as! Array<String>
+        if hideRead {
+            navigationItem.leftBarButtonItem?.title = "Show All"
+        } else {
+            navigationItem.leftBarButtonItem?.title = "Hide Read"
+        }
+        if let readUnwrapped = UserDefaults.standard.object(forKey: "Read") {
+            read = readUnwrapped as! Array<String>
+        }
         aste.removeAll()
-        self.tableView.reloadData()
+        tableView.reloadData()
         var ignoreItems = true;
         // initialize the ref in viewDidLoad
         asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
         asteRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            //let asteDict = snapshot.child as? [FIRDataSnapshot]
             ignoreItems = false
             for snap in snapshot.children {
                 self.insertRow(content: snap as! FIRDataSnapshot)
@@ -40,7 +59,7 @@ class TableViewController: UITableViewController {
             self.scroll()
         })
         asteRef.observe(.childAdded, with: { (snapshot) -> Void in
-            if (!ignoreItems) {
+            if !ignoreItems {
                 self.insertRow(content: snapshot)
             }
         })
@@ -48,35 +67,13 @@ class TableViewController: UITableViewController {
         asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
             let index = self.indexBySnapshotKey(snapshot: snapshot)
             self.aste.remove(at: index)
-            self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.automatic)
+            let indexPath = IndexPath(row: index, section: 0)
+            self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+            self.removeRead(at: indexPath)
         })
-        // [END child_event_listener]
-        // [START post_value_event_listener]
-        //        refHandle = asteQuery?.observe(.value, with: { (snapshot) in
-        //            let asteDict = snapshot.value as? [String: AnyObject] ?? [:]
-        //            for snap in asteDict
-        //            {
-        //                self.aste.append(snap)
-        //                self.tableView.insertRows(at: [IndexPath(row: self.aste.count-1, section: 0)], with: UITableViewRowAnimation.automatic)
-        //            }
-        
-        
-        // [START_EXCLUDE]
-        //self.asta.setValuesForKeys(asteDict)
-        //self.tableView.reloadData()
-        //self.navigationItem.title = self.asta.title
-        // [END_EXCLUDE]
-        //})
-        // [END post_value_event_listener]
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        print("viewWillAppear")
+    override func viewWillAppear(_ animated: Bool) {        
         super.viewWillAppear(animated)
         
     }
@@ -90,23 +87,23 @@ class TableViewController: UITableViewController {
     }
     
     func scroll() {
-        if let row = self.rowToScroll {
-            let index = self.indexByKey(key: row)
+        if let row = rowToScroll {
+            let index = indexByKey(key: row)
             let indexPath = IndexPath(row: index, section: 0)
-            self.tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
-            self.rowToScroll = nil
+            tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
+            rowToScroll = nil
         }
     }
     
     func insertRow(content: FIRDataSnapshot) {
-        let index = self.indexBySnapshotPrice(snapshot: content)
-        self.aste.insert(content, at: index)
-        self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
+        let index = indexBySnapshotPrice(snapshot: content)
+        aste.insert(content, at: index)
+        tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
     }
     
     func indexBySnapshotKey(snapshot: FIRDataSnapshot) -> Int {
         var index = 0
-        for asta in self.aste {
+        for asta in aste {
             if snapshot.key == asta.key {
                 return index
             }
@@ -117,7 +114,7 @@ class TableViewController: UITableViewController {
     
     func indexByKey(key: String) -> Int {
         var index = 0
-        for asta in self.aste {
+        for asta in aste {
             if asta.key == key {
                 return index
             }
@@ -128,8 +125,8 @@ class TableViewController: UITableViewController {
     
     func indexBySnapshotPrice(snapshot: FIRDataSnapshot) -> Int {
         var index = 0
-        for asta in self.aste {
-            if (snapshot.childSnapshot(forPath: "Prezzo").value as! Int) >= (asta.childSnapshot(forPath: "Prezzo").value as! Int) {
+        for asta in aste {
+            if snapshot.childSnapshot(forPath: "Prezzo").value as! Int >= asta.childSnapshot(forPath: "Prezzo").value as! Int {
                 return index
             }
             index += 1
@@ -172,30 +169,40 @@ class TableViewController: UITableViewController {
         swipeGesture.direction = UISwipeGestureRecognizerDirection.left
         cell.addGestureRecognizer(swipeGesture)
         cell.contentView.layer.opacity = 1
-        if (read.contains(aste[indexPath.row].key)) {
+        if read.contains(aste[indexPath.row].key) {
             cell.contentView.layer.opacity = 0.5
         }
         return cell
     }
     
     func cellSwipped(sender: UISwipeGestureRecognizer) {
-        let swipeLocation = sender.location(in: self.tableView)
-        let indexPath = self.tableView.indexPathForRow(at: swipeLocation)
-        let cell = self.tableView.cellForRow(at: indexPath!)
-        let defaults = UserDefaults.standard
+        let swipeLocation = sender.location(in: tableView)
+        let indexPath = tableView.indexPathForRow(at: swipeLocation)
+        let cell = tableView.cellForRow(at: indexPath!)
         switch sender.direction {
         case UISwipeGestureRecognizerDirection.right:
             cell?.contentView.layer.opacity = 1
-            if let index = read.index(of: aste[(indexPath?.row)!].key) {
-                read.remove(at: index)
+            if let indexPathUnwrapped = indexPath {
+                removeRead(at: indexPathUnwrapped)
             }
         case UISwipeGestureRecognizerDirection.left:
             cell?.contentView.layer.opacity = 0.5
-            read.append(aste[(indexPath?.row)!].key)
+            if let row = indexPath?.row {
+                if !read.contains(aste[row].key) {
+                    read.append(aste[row].key)
+                    tableView.reloadRows(at: [indexPath!], with: UITableViewRowAnimation.automatic)
+                }
+            }
         default:
             break
-        }        
-        defaults.set(read, forKey: "Read")
+        }
+        UserDefaults.standard.set(read, forKey: "Read")
+    }
+    
+    func removeRead(at: IndexPath) {
+        if let index = read.index(of: aste[(at.row)].key) {
+            read.remove(at: index)
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -204,7 +211,7 @@ class TableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         selectedAsta = aste[indexPath.row]
         var segueIdentifier: String
-        if ((selectedAsta?.childSnapshot(forPath: "Coordinate").value as? String) != nil)  {
+        if selectedAsta?.childSnapshot(forPath: "Coordinate").value as? String != nil  {
             segueIdentifier = "ShowMap"
         } else {
             segueIdentifier = "ShowDetail"
@@ -246,7 +253,14 @@ class TableViewController: UITableViewController {
             return false
         }
     }
-        
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if hideRead && read.index(of: aste[(indexPath.row)].key) != nil {
+            return 0;
+        }
+        return cellHeight;
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

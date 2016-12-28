@@ -18,7 +18,7 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = key
+        title = key
         // Create a reference with an initial file path and name
         let storage = FIRStorage.storage()
         // Create a storage reference from our storage service
@@ -30,7 +30,7 @@ class DetailViewController: UIViewController {
         let targetFile: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(key)?.appendingPathComponent("main.html") as URL!
         // Download to the local filesystem        
         astaRef.write(toFile: sourceURL) { (URL, error) -> Void in
-            if (error != nil) {
+            if error != nil {
                 return
             } else {
                 do {

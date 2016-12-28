@@ -104,9 +104,9 @@ def send_notification(message_title, key, immobile):
 		}
 	except:
 		return
-	print(message_title, key, data_message)
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
 	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
+	print(message_title, key, data_message, result)
 
 def zipdir(path, ziph):
 	abs_src = os.path.abspath(path)
@@ -168,7 +168,7 @@ for k in common_set:
 
 storage = firebase.storage()
 push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8')
-registration_id = 'Xsz-7-qxs0:APA91bGowRZ0369CGUCnLSEpE2Kmo8dfB3riIjUcwoEMCcnT1FDC6Jia-rR47UVEoVU4ZnO1G8D35VhLFuq_t_qEaSqa8Wsuz5n1Dq6nehmFlDiYICtNqOQhSRLc5vmoUqLTCqZ-EujZ'
+registration_id = 'cWl2NPamvf0:APA91bFXQW9lZgi4g1NrYmA1W-mDErrZ0lSy_lVM4aR1TPZJZP598SgK78xwx0FdlOrtOnqZxRLEPzcTRltOwluXw-QtyEbWVi02MqK5XvDc25P8VNqejAAzpgTe1tr40LG9X87L21mv'
 
 for k in (removed_set | changed_set):
 	storage.delete(k + '.zip')

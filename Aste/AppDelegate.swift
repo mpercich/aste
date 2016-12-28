@@ -16,8 +16,9 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let AUTH_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2MDgzMDc4ZGQxMzc4NzgxZjMxYzI2ZjVkZWNjMzIzYTM0OTVlZWIiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTQ4MjE5NjYyNywiaWF0IjoxNDgyMTkzMDI3LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1scmEyY0Bhc3RlLTQwNGQzLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbHJhMmNAYXN0ZS00MDRkMy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVzZXJfaWQiOiJhZG1pbiIsInNjb3BlIjoiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC9pZGVudGl0eXRvb2xraXQifQ.ml49DK1nSod6zt0z__DGuPtMHem7Va7j7bDUMZRYaKTPFsay-Kw5TKLtxyL3wBNoURxwPH06G0hMprVKFlkAao0o88AHBhUJYSPa5mhgm9GrC75e1yKzJR25-lWZXIeDKgSRq2LjoWxbGOv9QPIU6MK1ZIQepIRwbSi0LoMkTlNqlxZGIdtUxatGhEYEQrjqlrdDy6IrN1o4uHfw5Xh6ynaUXUMjFDREliAt24GgdSD0eDslxg0ohBKCM66qWdXo7HNHNGnQevWMyujnLa7a0vhZLWp-83FLzz-mfRf4NfsMQv_akUvvn-XV-U-PX_svtUd_aqG8cThmxtwoapjf9w"
-
+    let AUTH_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2MDgzMDc4ZGQxMzc4NzgxZjMxYzI2ZjVkZWNjMzIzYTM0OTVlZWIiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTQ4Mjk2MDYxNywiaWF0IjoxNDgyOTU3MDE3LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1scmEyY0Bhc3RlLTQwNGQzLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbHJhMmNAYXN0ZS00MDRkMy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVzZXJfaWQiOiJhZG1pbiIsInNjb3BlIjoiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC9pZGVudGl0eXRvb2xraXQifQ.K1fc7CSGuv8uPqGZDYQqoalIYwreMkMsBo3k9WfITwvtpEvIvUfnEuteJTWb5BKhAwTW0vT-YFElXOkUf91YMOPzUqIDmfgHbcQhl8nBbsU--SGdtcQcA_7ymfQqZoP9c8uVcK-UUVFAeWqEhcplInBdX4u9qHUbjDBvd_B4lHK0KWxkK3ZJeGeGF6eHtAyDMwu9fq2oIB0t8l04v3loG_XZmqacwZ28qrXKra0gu4R1OMnYuJt8_3ytoYS4P9OaluAqA-6urS2CSD1DSCQTAyKxeZLCEFMHXTo9MHkma5rWvZ9iIdf7Vv1obXXBjMs7xhy-e139BlTJHa6Qt7H8bw"
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         if #available(iOS 10.0, *) {
@@ -182,7 +183,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         print("Prezzo: \(userInfo["Prezzo"]!)")
         print("Indirizzo: \(userInfo["Indirizzo"]!)")
         let key = userInfo["Codice"] as! String
-        let nav: UINavigationController = self.window!.rootViewController as! UINavigationController
+        let nav: UINavigationController = window!.rootViewController as! UINavigationController
         if !(nav.topViewController is TableViewController) {
             for controller in nav.viewControllers {
                 if controller is TableViewController {

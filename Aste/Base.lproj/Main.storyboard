@@ -103,7 +103,15 @@
                             <outlet property="delegate" destination="nGR-eA-r5K" id="0ED-jy-rqC"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Aste" id="7Q2-O0-xb1"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Aste" id="7Q2-O0-xb1">
+                        <barButtonItem key="leftBarButtonItem" title="Hide Read" id="vA7-8s-Zws">
+                            <connections>
+                                <action selector="leftButtonClicked:" destination="nGR-eA-r5K" id="zdr-pd-EU1"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="M5Q-ef-R7O" kind="show" identifier="ShowMap" id="vt9-EK-J9R"/>
                         <segue destination="TfW-jr-vt2" kind="show" identifier="ShowDetail" id="LLJ-9K-icn"/>
@@ -182,6 +190,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="93s-yY-lbF"/>
+        <segue reference="LLJ-9K-icn"/>
     </inferredMetricsTieBreakers>
 </document>
