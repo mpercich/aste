@@ -63,10 +63,14 @@ def grab(parameters, list):
 		try:
 			temp.append(record.parent.find('div', class_='schedadettagliata').find('a')['href'])	
 		except:
+			e = sys.exc_info()[0]
+			print(temp[keys.index('Codice')], e)
 			temp += ['']
 		try:
 			temp.append(record.parent.find('div', class_='elencoallegati').get_text('', strip=True))
 		except:
+			e = sys.exc_info()[0]
+			print(temp[keys.index('Codice')], e)
 			temp += ['']
 		if temp[keys.index('Prezzo')] == 0:
 			try:
@@ -94,15 +98,15 @@ def grab(parameters, list):
 def send_notification(message_title, key, immobile):
 	try:
 		data_message = {
-			'Codice' : k,
-			'Prezzo' : immobile['Prezzo'],
-			'Indirizzo' : immobile['Indirizzo']
+			'Codice': k,
+			'Prezzo': immobile['Prezzo'],
+			'Indirizzo': immobile['Indirizzo']
 		}
 	except:
 		return
 	print(message_title, key, data_message)
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
-	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message)
+	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
 
 def zipdir(path, ziph):
 	abs_src = os.path.abspath(path)
