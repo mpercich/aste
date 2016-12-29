@@ -100,7 +100,7 @@ def grab(parameters, list):
 		list.append(key)
 	return response
 
-def send_notification(message_title, key, immobile):
+def send_notification(message_title, key, immobile, topic_condition):
 	try:
 		data_message = {
 			'Codice': k,
@@ -110,7 +110,8 @@ def send_notification(message_title, key, immobile):
 	except:
 		return
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
-	result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
+	result = push_service.notify_topic_subscribers(message_body=message_body, condition=topic_condition, message_title=message_title, data_message=data_message, time_to_live=7*24*60*60)
+	#result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
 	print(message_title, key, data_message, result[0]['results'])
 
 def zipdir(path, ziph):
@@ -216,9 +217,11 @@ for k in (new_set | changed_set):
 			db.child(k).set(list(immobile.values())[0])
 			if k in new_set:
 				title = 'Nuova asta'
+				condition = "'aste_new' in topics"
 			else:
 				title = 'Asta modificata'
-			send_notification(title, k, immobile[k])
+				condition = "'aste_changed' in topics"
+			send_notification(title, k, immobile[k], condition)
 			break
 
 if (new_set != set()):

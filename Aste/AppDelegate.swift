@@ -16,10 +16,11 @@ import UserNotifications
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    let AUTH_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2MDgzMDc4ZGQxMzc4NzgxZjMxYzI2ZjVkZWNjMzIzYTM0OTVlZWIiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTQ4Mjk2MDYxNywiaWF0IjoxNDgyOTU3MDE3LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1scmEyY0Bhc3RlLTQwNGQzLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbHJhMmNAYXN0ZS00MDRkMy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVzZXJfaWQiOiJhZG1pbiIsInNjb3BlIjoiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC9pZGVudGl0eXRvb2xraXQifQ.K1fc7CSGuv8uPqGZDYQqoalIYwreMkMsBo3k9WfITwvtpEvIvUfnEuteJTWb5BKhAwTW0vT-YFElXOkUf91YMOPzUqIDmfgHbcQhl8nBbsU--SGdtcQcA_7ymfQqZoP9c8uVcK-UUVFAeWqEhcplInBdX4u9qHUbjDBvd_B4lHK0KWxkK3ZJeGeGF6eHtAyDMwu9fq2oIB0t8l04v3loG_XZmqacwZ28qrXKra0gu4R1OMnYuJt8_3ytoYS4P9OaluAqA-6urS2CSD1DSCQTAyKxeZLCEFMHXTo9MHkma5rWvZ9iIdf7Vv1obXXBjMs7xhy-e139BlTJHa6Qt7H8bw"
+    let AUTH_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2MDgzMDc4ZGQxMzc4NzgxZjMxYzI2ZjVkZWNjMzIzYTM0OTVlZWIiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImV4cCI6MTQ4MzAwMzg1NSwiaWF0IjoxNDgzMDAwMjU1LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1scmEyY0Bhc3RlLTQwNGQzLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstbHJhMmNAYXN0ZS00MDRkMy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVzZXJfaWQiOiJhZG1pbiIsInNjb3BlIjoiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC9pZGVudGl0eXRvb2xraXQifQ.J2LcVAhRc1MbQbqwtlkwrY-VZ041_W7vKeQ523MT3-FrRNGiksi0aYw8mTt6NOsrCKpcYuna-96M59oyI6_AMpML7WoI83HFIFGFpV5LWtfTvWYhY_3nuxsB_3DPRZIeyQFLhmXZqJ_1PuG9RTDvvwsSv4mCXqifoumvQfU6ABTGT5ANU4i3tQufKBEQhymgvOnuRlwgptxHEkppQJqWqH10Hf4XmGSLYDG55pH7zy6XeK1Kz0x1RBV_afkS27OqHPOPMifszFWpjrh5Q3fb0tu2VDCNzn-JP6M2U6Adbff2q43r1F2wOoJIABdaKjGD-XG1l-oRCN969WjUmBNlgw"
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        FIRApp.configure();
         // Override point for customization after application launch.
         if #available(iOS 10.0, *) {
             let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
@@ -38,7 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         application.registerForRemoteNotifications()
-        FIRApp.configure();
         let firebaseAuth = FIRAuth.auth()
 //        do {
 //            try firebaseAuth?.signOut()
@@ -116,6 +116,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("APNs token retrieved: \(deviceToken)")
         // With swizzling disabled you must set the APNs token here.
         FIRInstanceID.instanceID().setAPNSToken(deviceToken, type: FIRInstanceIDAPNSTokenType.sandbox)
+        FIRMessaging.messaging().subscribe(toTopic: "/topics/aste_new")
+        FIRMessaging.messaging().subscribe(toTopic: "/topics/aste_changed")
     }
     func applicationDidBecomeActive(_ application: UIApplication) {
         connectToFcm()
