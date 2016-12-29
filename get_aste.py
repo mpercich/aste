@@ -112,7 +112,7 @@ def send_notification(message_title, key, immobile, topic_condition):
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
 	result = push_service.notify_topic_subscribers(message_body=message_body, condition=topic_condition, message_title=message_title, data_message=data_message, time_to_live=7*24*60*60)
 	#result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
-	print(message_title, key, data_message, result, result[0]['results'])
+	print(message_title, key, data_message, result)
 
 def zipdir(path, ziph):
 	abs_src = os.path.abspath(path)
@@ -175,7 +175,7 @@ storage = firebase.storage()
 push_service = FCMNotification(api_key='AIzaSyDYSt7f8wPqlyMdvxf-hRBF-HJYUjqwUL8')
 registration_id = 'fe37ynctPwY:APA91bF4_-bK4ZNM_4NdaduVdkC6ZGeKcqyFY0ncepmr5LSTmZvcOfUjR8xThhjYlxcAj9E2VQLLtQmeE2XKriIIf07OI8Iy9g6a4L5PqQ9iMEJAxR4oQ2dbvBcwIvezwt6d49pgsiyp'
 
-for k in (removed_set | changed_set):
+for k in (removed_set):
 	storage.delete(k + '.zip')
 	db.child(k).remove()
 
@@ -214,12 +214,13 @@ for k in (new_set | changed_set):
 			zipf.close()
 			shutil.rmtree(download_path)
 			storage.child(zip_name).put(zip_path)
-			db.child(k).set(list(immobile.values())[0])
 			if k in new_set:
-				title = 'Nuova asta'
+				db.child(k).set(list(immobile.values())[0])
+				title = 'Nuova Asta'
 				condition = "'aste_new' in topics"
 			else:
-				title = 'Asta modificata'
+				db.child(k).update(list(immobile.values())[0])
+				title = 'Asta Modificata'
 				condition = "'aste_changed' in topics"
 			send_notification(title, k, immobile[k], condition)
 			break

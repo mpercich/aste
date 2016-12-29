@@ -63,6 +63,12 @@ class TableViewController: UITableViewController {
                 self.insertRow(content: snapshot)
             }
         })
+        asteRef.observe(.childChanged, with: { (snapshot) -> Void in
+            let index = self.indexBySnapshotKey(snapshot: snapshot)
+            let indexPath = IndexPath(row: index, section: 0)            
+            self.aste[index] = snapshot
+            self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+        })
         // Listen for deleted aste in the Firebase database
         asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
             let index = self.indexBySnapshotKey(snapshot: snapshot)
@@ -90,6 +96,8 @@ class TableViewController: UITableViewController {
         if let row = rowToScroll {
             let index = indexByKey(key: row)
             let indexPath = IndexPath(row: index, section: 0)
+            removeRead(at: indexPath)
+            tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
             tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
             rowToScroll = nil
         }
