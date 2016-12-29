@@ -39,21 +39,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         application.registerForRemoteNotifications()
-        let firebaseAuth = FIRAuth.auth()
-//        do {
-//            try firebaseAuth?.signOut()
-//        } catch let signOutError as NSError {
-//            print ("Error signing out: %@", signOutError)
-//        }
-        firebaseAuth?.signIn(withCustomToken: AUTH_TOKEN, completion: { (user, error) in
+        do {
+            try FIRAuth.auth()?.signOut()
+        } catch let signOutError as NSError {
+            print ("Error signing out: \(signOutError)")
+        } catch {
+            print("Unknown error.")
+        }
+        FIRAuth.auth()?.signIn(withEmail: "mpercich@me.com", password: "valentina") { (user, error) in
+            if let error = error {
+                print("Authentication failed with error: \(error.localizedDescription)")
+            } else {
+                print("Authentication successfull for user: \(user?.email)")
+            }
+        }
+        /*
+        FIRAuth.auth()?.signIn(withCustomToken: AUTH_TOKEN, completion: { (user, error) in
             if let error = error {
                 print("Authentication failed with error: \(error.localizedDescription)")
             } else {
                 print("Authentication successfull for user: \(user?.email)")
             }
         })
+        */
         
-        // [END signinwithcustomtoken]
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.tokenRefreshNotification),
                                                name: .firInstanceIDTokenRefresh,
