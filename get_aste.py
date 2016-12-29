@@ -112,7 +112,7 @@ def send_notification(message_title, key, immobile, topic_condition):
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
 	result = push_service.notify_topic_subscribers(message_body=message_body, condition=topic_condition, message_title=message_title, data_message=data_message, time_to_live=7*24*60*60)
 	#result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
-	print(message_title, key, data_message, result[0]['results'])
+	print(message_title, key, data_message, result, result[0]['results'])
 
 def zipdir(path, ziph):
 	abs_src = os.path.abspath(path)
