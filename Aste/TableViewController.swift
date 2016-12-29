@@ -67,7 +67,7 @@ class TableViewController: UITableViewController {
         asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
             let index = self.indexBySnapshotKey(snapshot: snapshot)
             let indexPath = IndexPath(row: index, section: 0)
-            self.removeRead(at: indexPath)
+            self.removeRead(at: indexPath)            
             self.aste.remove(at: index)
             self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
         })
@@ -191,6 +191,7 @@ class TableViewController: UITableViewController {
                 if !read.contains(aste[row].key) {
                     read.append(aste[row].key)
                     UserDefaults.standard.set(read, forKey: "Read")
+                    tableView.reloadRows(at: [indexPath!], with: UITableViewRowAnimation.automatic)
                 }
             }
         default:
