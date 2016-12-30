@@ -20,7 +20,9 @@ start = datetime.datetime.now()
 print('start:', start)
 
 root = 'www.astegiudiziarie.it'
+m_root = 'm.astegiudiziarie.it'
 root_url = 'https://' + root
+m_root_url = 'http://' + m_root
 
 def send_request(body):
 	global payload
@@ -61,7 +63,9 @@ def grab(parameters, list):
 		except:
 			temp[keys.index('Prezzo')] = 0
 		try:
-			temp.append(record.parent.find('div', class_='schedadettagliata').find('a')['href'])	
+			link = record.parent.find('div', class_='schedadettagliata').find('a')['href']
+			link = (link.replace('secondasel', 'Scheda')).replace('?id', '?idl')[:-8]
+			temp.append(link)
 		except:
 			e = sys.exc_info()[0]
 			print(temp[keys.index('Codice')], e)
@@ -112,7 +116,7 @@ def send_notification(message_title, key, immobile, topic_condition):
 	message_body = k + ' - ' + locale.currency(immobile['Prezzo'], grouping=True, international=True) + ' - ' + immobile['Indirizzo']
 	result = push_service.notify_topic_subscribers(message_body=message_body, condition=topic_condition, message_title=message_title, data_message=data_message, time_to_live=7*24*60*60)
 	#result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title, message_body=message_body, data_message=data_message, time_to_live=7*24*60*60)
-	print(message_title, key, data_message, result)
+	print(message_title, key, data_message, result[0])
 
 def zipdir(path, ziph):
 	abs_src = os.path.abspath(path)
@@ -182,27 +186,27 @@ for k in (removed_set):
 for k in (new_set | changed_set):
 	for immobile in aste:
 		if (list(immobile.keys())[0] == k):
-			url = root_url + immobile[k]['Link']
+			url = m_root_url + immobile[k]['Link']
 			dest = os.path.dirname(os.getcwd())
-			call(['wget', '-p', '-q', '-k', '-e robots=off', '-E', '-r', '-l1', '-P' + dest, '--restrict-file-names=windows', url])
-			download_path = dest + '/' + root
-			main = [filename for filename in os.listdir(download_path) if filename.startswith('seconda')]
+			call(['wget', '-p', '-q', '-k', '-e robots=off', '-E', '-r', '-l1', '-P' + dest, '-np', '--restrict-file-names=windows', url])
+			download_path = dest + '/' + m_root
+			[os.remove(download_path + '/' + filename) for filename in os.listdir(download_path) if filename.startswith('mappag')]
+			main = [filename for filename in os.listdir(download_path) if filename.startswith('Scheda')]
 			main_file = download_path + '/' + main[0]
 			renamed_file = download_path + '/' + 'main.html'
 			os.rename(main_file, renamed_file)
 			with open(renamed_file, 'r+') as content_file:
 				content = content_file.read()
 				soup = BeautifulSoup(content, 'html.parser')
-				try:
-					soup.find('div', id='banner_cookie').decompose()
-				except:
-					pass
-				[res.decompose() for res in soup.findAll('div', id='header')]
-				[res.decompose() for res in soup.findAll('div', id='wrapper')]
-				[res.decompose() for res in soup.findAll('div', id='footer')]
-				[res.decompose() for res in soup.findAll('div', {'class': 'DivH1'})]
-				[res.decompose() for res in soup.findAll('div', {'class': 'DivPreferito'})]
-				[res.decompose() for res in soup.findAll('p', {'class': 'WarningDocNA'})]
+				for i in range(2):
+					soup.find('div').decompose()
+				[res.decompose() for res in soup.findAll('div', id='ctl00_pnlMenu')]
+				[res.decompose() for res in soup.findAll('a', {'class': 'ButtonGen'})]
+				[res.decompose() for res in soup.findAll('div', {'class': 'divInfoSheda'})]
+				[res.decompose() for res in soup.findAll('div', id='ctl00_pnlClassic')]
+				[res.decompose() for res in soup.findAll('div', id='ctl00_incContentPlaceHolder_incCtrlScheda_DivPreferito')]
+				[res.decompose() for res in soup.findAll('div', id='messaggioLoggati')]
+				[res.decompose() for res in soup.findAll('a', id='ctl00_incContentPlaceHolder_incCtrlScheda_hlMappa')]
 				content_file.seek(0)
 				content_file.write(str(soup))
 				content_file.truncate()
