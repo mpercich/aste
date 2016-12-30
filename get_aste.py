@@ -27,7 +27,7 @@ m_root_url = 'http://' + m_root
 def send_request(body):
 	global payload
 	s = Session()
-	proxies = {'https': 'https://us00749:Korcula1@proxymil.internal.unicredit.eu:80'}
+	proxies = {'https': 'https://us00749:Wolfsburg1@proxymil.internal.unicredit.eu:80'}
 	headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': str(len(body)), 'Accept-Encoding': 'utf-8'}
 	req = Request('POST', root_url + '/default.aspx', headers=headers)
 	prepped = req.prepare()
@@ -138,7 +138,7 @@ config = {
 locale.setlocale(locale.LC_ALL, 'it_IT')
 urllib3.disable_warnings()
 gmaps = googlemaps.Client(key='AIzaSyAW6WUTf8TVlGlpzbG0R_nYJxH79MXstxA') 
-#gmaps = googlemaps.Client(key='AIzaSyAW6WUTf8TVlGlpzbG0R_nYJxH79MXstxA', requests_kwargs={'proxies': {'http': 'http://us00749:Korcula1@proxymil.internal.unicredit.eu:80', 'https': 'https://us00749:Korcula1@proxymil.internal.unicredit.eu:80'}, 'verify': False}) 
+#gmaps = googlemaps.Client(key='AIzaSyAW6WUTf8TVlGlpzbG0R_nYJxH79MXstxA', requests_kwargs={'proxies': {'http': 'http://us00749:Wolfsburg1@proxymil.internal.unicredit.eu:80', 'https': 'https://us00749:Wolfsburg1@proxymil.internal.unicredit.eu:80'}, 'verify': False}) 
 firebase = pyrebase.initialize_app(config)
 
 db = firebase.database()
