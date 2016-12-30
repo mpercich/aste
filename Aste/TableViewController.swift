@@ -46,8 +46,8 @@ class TableViewController: UITableViewController {
         if let readUnwrapped = UserDefaults.standard.object(forKey: "Read") {
             read = readUnwrapped as! Array<String>
         }
-        aste.removeAll()
-        tableView.reloadData()
+        //aste.removeAll()
+        //tableView.reloadData()
         var ignoreItems = true;
         // initialize the ref in viewDidLoad
         asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
