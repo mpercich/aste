@@ -70,6 +70,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let token = FIRInstanceID.instanceID().token() {
                     print("token is < \(token) >:")
                 }
+        if let remoteNotification = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as! [NSObject : AnyObject]? {
+                NSLog("App received notification from remote \(remoteNotification)")
+                self.application(application, didReceiveRemoteNotification: remoteNotification)
+        } else {
+            NSLog("App did not receive notification")
+        }
         return true
     }
     

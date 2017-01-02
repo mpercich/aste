@@ -38,9 +38,9 @@ class CustomNavigationController: UINavigationController {
 extension CustomNavigationController: UINavigationBarDelegate {
     
     func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
-        print("shouldpop")
-        //self.popViewController(animated: true)
-        return false
+        //print("shouldpop")
+        self.popViewController(animated: true)
+        return true
     }
     
 }
