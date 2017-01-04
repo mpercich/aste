@@ -8,16 +8,13 @@
 
 import UIKit
 import Firebase
-import UserNotifications
-
 
 class TableViewController: UITableViewController {
     
     // your data source, you can replace this with your own model if you wish
     var aste: Array<FIRDataSnapshot> = []
     lazy var asteRef: FIRDatabaseReference = FIRDatabase.database().reference()
-    //var asteQuery: FIRDatabaseQuery?
-    var refHandle: FIRDatabaseHandle?
+    var asteQuery: FIRDatabaseQuery!
     var selectedAsta: FIRDataSnapshot?
     var rowToScroll: String?
     var read: Array<String> = []
@@ -47,13 +44,13 @@ class TableViewController: UITableViewController {
             read = readUnwrapped as! Array<String>
         }
         FIRDatabase.database().persistenceEnabled = true
-        // initialize the ref in viewDidLoad
-        //asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
         asteRef.keepSynced(true)
-        asteRef.observeSingleEvent(of: .value, with: { (snapshot) in
+        asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
+        asteQuery.observeSingleEvent(of: .value, with: { (snapshot) in
             for snap in snapshot.children {
-                self.insertRow(content: snap as! FIRDataSnapshot)
+                self.aste.append(snap as! FIRDataSnapshot)
             }
+            self.aste.sort{$0.childSnapshot(forPath: "Prezzo").value as! Int > $1.childSnapshot(forPath: "Prezzo").value as! Int}
             self.tableView.reloadData()
             self.scroll()
         })
@@ -74,12 +71,12 @@ class TableViewController: UITableViewController {
     }
     
     func setObservers() {
-        asteRef.observe(.childAdded, with: { (snapshot) -> Void in
+        asteQuery.observe(.childAdded, with: { (snapshot) -> Void in
             if self.indexBySnapshotKey(snapshot: snapshot) == nil {
                 self.insertRow(content: snapshot)
             }
         })
-        asteRef.observe(.childChanged, with: { (snapshot) -> Void in
+        asteQuery.observe(.childChanged, with: { (snapshot) -> Void in
             if let index = self.indexBySnapshotKey(snapshot: snapshot) {
                 let indexPath = IndexPath(row: index, section: 0)
                 self.removeRead(at: indexPath)
@@ -87,8 +84,7 @@ class TableViewController: UITableViewController {
                 self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
             }
         })
-        // Listen for deleted aste in the Firebase database
-        asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
+        asteQuery.observe(.childRemoved, with: { (snapshot) -> Void in
             if let index = self.indexBySnapshotKey(snapshot: snapshot) {
                 let indexPath = IndexPath(row: index, section: 0)
                 self.removeRead(at: indexPath)
