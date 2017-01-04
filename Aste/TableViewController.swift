@@ -147,42 +147,6 @@ class TableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return aste.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! TableViewCell
-
-        // Configure the cell...
-        cell.key.text = aste[indexPath.row].key
-        cell.price.text = TableViewController.formatPrice(value: aste[indexPath.row].childSnapshot(forPath: "Prezzo").value)
-        cell.date.text = aste[indexPath.row].childSnapshot(forPath: "Data").value as? String
-        cell.type.text = aste[indexPath.row].childSnapshot(forPath: "Tipologia").value as? String
-        cell.property.text = aste[indexPath.row].childSnapshot(forPath: "Lotto").value as? String
-        cell.sale.text = aste[indexPath.row].childSnapshot(forPath: "Vendita").value as? String
-        cell.address.text = aste[indexPath.row].childSnapshot(forPath: "Indirizzo").value as? String
-        cell.attachment.text = aste[indexPath.row].childSnapshot(forPath: "Allegati").value as? String
-        var swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
-        cell.addGestureRecognizer(swipeGesture)
-        swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
-        swipeGesture.direction = UISwipeGestureRecognizerDirection.left
-        cell.addGestureRecognizer(swipeGesture)
-        cell.contentView.layer.opacity = 1
-        if read.contains(aste[indexPath.row].key) {
-            cell.contentView.layer.opacity = 0.5
-        }
-        return cell
-    }
     
     func cellSwipped(sender: UISwipeGestureRecognizer) {
         let swipeLocation = sender.location(in: tableView)
@@ -264,6 +228,42 @@ class TableViewController: UITableViewController {
             return false
         }
     }
+    
+    // MARK: - Table view data source
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return aste.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath) as! TableViewCell
+        
+        // Configure the cell...
+        cell.key.text = aste[indexPath.row].key
+        cell.price.text = TableViewController.formatPrice(value: aste[indexPath.row].childSnapshot(forPath: "Prezzo").value)
+        cell.date.text = aste[indexPath.row].childSnapshot(forPath: "Data").value as? String
+        cell.type.text = aste[indexPath.row].childSnapshot(forPath: "Tipologia").value as? String
+        cell.property.text = aste[indexPath.row].childSnapshot(forPath: "Lotto").value as? String
+        cell.sale.text = aste[indexPath.row].childSnapshot(forPath: "Vendita").value as? String
+        cell.address.text = aste[indexPath.row].childSnapshot(forPath: "Indirizzo").value as? String
+        cell.attachment.text = aste[indexPath.row].childSnapshot(forPath: "Allegati").value as? String
+        var swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
+        cell.addGestureRecognizer(swipeGesture)
+        swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
+        swipeGesture.direction = UISwipeGestureRecognizerDirection.left
+        cell.addGestureRecognizer(swipeGesture)
+        cell.contentView.layer.opacity = 1
+        if read.contains(aste[indexPath.row].key) {
+            cell.contentView.layer.opacity = 0.5
+        }
+        return cell
+    }    
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if hideRead && read.index(of: aste[(indexPath.row)].key) != nil {
