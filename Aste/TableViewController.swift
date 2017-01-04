@@ -16,7 +16,7 @@ class TableViewController: UITableViewController {
     // your data source, you can replace this with your own model if you wish
     var aste: Array<FIRDataSnapshot> = []
     lazy var asteRef: FIRDatabaseReference = FIRDatabase.database().reference()
-    var asteQuery: FIRDatabaseQuery?
+    //var asteQuery: FIRDatabaseQuery?
     var refHandle: FIRDatabaseHandle?
     var selectedAsta: FIRDataSnapshot?
     var rowToScroll: String?
@@ -48,7 +48,8 @@ class TableViewController: UITableViewController {
         }
         FIRDatabase.database().persistenceEnabled = true
         // initialize the ref in viewDidLoad
-        asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
+        //asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
+        asteRef.keepSynced(true)
         asteRef.observeSingleEvent(of: .value, with: { (snapshot) in
             for snap in snapshot.children {
                 self.insertRow(content: snap as! FIRDataSnapshot)
