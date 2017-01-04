@@ -46,36 +46,15 @@ class TableViewController: UITableViewController {
         if let readUnwrapped = UserDefaults.standard.object(forKey: "Read") {
             read = readUnwrapped as! Array<String>
         }
-        //aste.removeAll()
-        //tableView.reloadData()
-        var ignoreItems = true;
+        FIRDatabase.database().persistenceEnabled = true
         // initialize the ref in viewDidLoad
         asteQuery = asteRef.queryOrdered(byChild: "Prezzo")
         asteRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            ignoreItems = false
             for snap in snapshot.children {
                 self.insertRow(content: snap as! FIRDataSnapshot)
             }
+            self.tableView.reloadData()
             self.scroll()
-        })
-        asteRef.observe(.childAdded, with: { (snapshot) -> Void in
-            if !ignoreItems {
-                self.insertRow(content: snapshot)
-            }
-        })
-        asteRef.observe(.childChanged, with: { (snapshot) -> Void in
-            let index = self.indexBySnapshotKey(snapshot: snapshot)
-            let indexPath = IndexPath(row: index, section: 0)            
-            self.aste[index] = snapshot
-            self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
-        })
-        // Listen for deleted aste in the Firebase database
-        asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
-            let index = self.indexBySnapshotKey(snapshot: snapshot)
-            let indexPath = IndexPath(row: index, section: 0)
-            self.removeRead(at: indexPath)            
-            self.aste.remove(at: index)
-            self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
         })
     }
     
@@ -86,10 +65,36 @@ class TableViewController: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        setObservers()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+    }
+    
+    func setObservers() {
+        asteRef.observe(.childAdded, with: { (snapshot) -> Void in
+            if self.indexBySnapshotKey(snapshot: snapshot) == nil {
+                self.insertRow(content: snapshot)
+            }
+        })
+        asteRef.observe(.childChanged, with: { (snapshot) -> Void in
+            if let index = self.indexBySnapshotKey(snapshot: snapshot) {
+                let indexPath = IndexPath(row: index, section: 0)
+                self.removeRead(at: indexPath)
+                self.aste[index] = snapshot
+                self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+            }
+        })
+        // Listen for deleted aste in the Firebase database
+        asteRef.observe(.childRemoved, with: { (snapshot) -> Void in
+            if let index = self.indexBySnapshotKey(snapshot: snapshot) {
+                let indexPath = IndexPath(row: index, section: 0)
+                self.removeRead(at: indexPath)
+                self.aste.remove(at: index)
+                self.tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+            }
+        })
     }
     
     func scroll() {
@@ -97,7 +102,7 @@ class TableViewController: UITableViewController {
             let index = indexByKey(key: row)
             let indexPath = IndexPath(row: index, section: 0)
             removeRead(at: indexPath)
-            tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+            //tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
             tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
             rowToScroll = nil
         }
@@ -109,7 +114,7 @@ class TableViewController: UITableViewController {
         tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.none)
     }
     
-    func indexBySnapshotKey(snapshot: FIRDataSnapshot) -> Int {
+    func indexBySnapshotKey(snapshot: FIRDataSnapshot) -> Int? {
         var index = 0
         for asta in aste {
             if snapshot.key == asta.key {
@@ -117,7 +122,7 @@ class TableViewController: UITableViewController {
             }
             index += 1
         }
-        return 0
+        return nil
     }
     
     func indexByKey(key: String) -> Int {

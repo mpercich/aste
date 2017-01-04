@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os
 import Firebase
 import FirebaseMessaging
 import FirebaseInstanceID
@@ -71,10 +72,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("token is < \(token) >:")
                 }
         if let remoteNotification = launchOptions?[UIApplicationLaunchOptionsKey.remoteNotification] as! [NSObject : AnyObject]? {
-                NSLog("App received notification from remote \(remoteNotification)")
+            os_log("App received notification from remote %s", type: .info, remoteNotification)
                 self.application(application, didReceiveRemoteNotification: remoteNotification)
         } else {
-            NSLog("App did not receive notification")
+            os_log("App did not receive notification", type: .info)
         }
         return true
     }
