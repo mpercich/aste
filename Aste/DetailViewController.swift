@@ -8,42 +8,55 @@
 
 import UIKit
 import FirebaseStorage
+import FirebaseDatabase
 import SSZipArchive
 import WebKit
 
 class DetailViewController: UIViewController {
 
+    
     var webView: WKWebView!
-    var key: String!
-
+    var asta: FIRDataSnapshot?
+    
+    @IBAction func share(_ sender: Any) {
+        if let asta = asta {
+            let subject = "Asta in " + (asta.childSnapshot(forPath: "Indirizzo").value as! String) + " prezzo: " + TableViewController.formatPrice(value: asta.childSnapshot(forPath: "Prezzo").value)
+            let content = "http://www.astegiudiziarie.it" + (asta.childSnapshot(forPath: "Link").value as! String).replacingOccurrences(of: "Scheda", with: "secondasel").replacingOccurrences(of: "idl", with: "id")
+            let objectsToShare = [content]
+            let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+            activityViewController.setValue(subject, forKey: "Subject")
+            present(activityViewController, animated: true, completion: {})
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = key
-        // Create a reference with an initial file path and name
-        let storage = FIRStorage.storage()
-        // Create a storage reference from our storage service
-        let storageRef = storage.reference(forURL: "gs://aste-404d3.appspot.com")
-        let fileName = key + ".zip"
-        let astaRef = storageRef.child(fileName)
-        let sourceURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName) as URL!
-        let targetURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(key) as URL!
-        let targetFile: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(key)?.appendingPathComponent("main.html") as URL!
-        // Download to the local filesystem        
-        astaRef.write(toFile: sourceURL) { (URL, error) -> Void in
-            if error != nil {
-                return
-            } else {
-                do {
-                    try FileManager.default.removeItem(at: targetURL)
+        if let key = asta?.key {
+            // Create a reference with an initial file path and name
+            let storage = FIRStorage.storage()
+            // Create a storage reference from our storage service
+            let storageRef = storage.reference(forURL: "gs://aste-404d3.appspot.com")
+            let fileName = key + ".zip"
+            let astaRef = storageRef.child(fileName)
+            let sourceURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName) as URL!
+            let targetURL: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(key) as URL!
+            let targetFile: URL! = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(key)?.appendingPathComponent("main.html") as URL!
+            // Download to the local filesystem        
+            astaRef.write(toFile: sourceURL) { (URL, error) -> Void in
+                if error != nil {
+                    return
+                } else {
+                    do {
+                        try FileManager.default.removeItem(at: targetURL)
+                    }
+                    catch {
+                        print("remove failed!")
+                    }
+                    SSZipArchive.unzipFile(atPath: sourceURL.path, toDestination: targetURL.path)
+                    self.webView.loadFileURL(targetFile, allowingReadAccessTo: targetFile)
                 }
-                catch {
-                    print("remove failed!")
-                }
-                SSZipArchive.unzipFile(atPath: sourceURL.path, toDestination: targetURL.path)
-                self.webView.loadFileURL(targetFile, allowingReadAccessTo: targetFile)
             }
         }
-        // Do any additional setup after loading the view.
     }
 
     override func loadView() {
@@ -62,6 +75,11 @@ class DetailViewController: UIViewController {
         get {
             return false
         }
+    }
+    
+    func displayShareSheet(shareContent: String) {
+        let activityViewController = UIActivityViewController(activityItems: [shareContent as NSString], applicationActivities: nil)
+        present(activityViewController, animated: true, completion: {})
     }
     
 
@@ -92,19 +110,21 @@ extension DetailViewController: WKNavigationDelegate {
         print(navigationAction.request)
         var url = navigationAction.request.url
         let urlString = navigationAction.request.url?.path
-        if !(urlString?.hasSuffix(key))! && !(urlString?.hasSuffix(".pdf"))! && !(urlString?.hasSuffix(".html"))! && !(urlString?.hasSuffix(".aspx"))!  {
-            url = url?.appendingPathExtension("pdf")
-            do {
-                try FileManager.default.moveItem(at: navigationAction.request.url!, to: url!)
-            }
-            catch {
-                print("rename failed!")
+        if let key = asta?.key {
+            if !(urlString?.hasSuffix(key))! && !(urlString?.hasSuffix(".pdf"))! && !(urlString?.hasSuffix(".html"))! && !(urlString?.hasSuffix(".aspx"))!  {
+                url = url?.appendingPathExtension("pdf")
+                do {
+                    try FileManager.default.moveItem(at: navigationAction.request.url!, to: url!)
+                }
+                catch {
+                    print("rename failed!")
+                    decisionHandler(.cancel)
+                    return
+                }
+                webView.load(URLRequest(url: url!))
                 decisionHandler(.cancel)
                 return
             }
-            webView.load(URLRequest(url: url!))
-            decisionHandler(.cancel)
-            return
         }
         decisionHandler(.allow)
         return

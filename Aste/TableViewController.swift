@@ -204,8 +204,8 @@ class TableViewController: UITableViewController {
                 }
             case "ShowDetail":
                 if let destinationVC = segue.destination as? DetailViewController {
-                    destinationVC.key = (selectedAsta?.key)
-                    print("\(destinationVC.key)")
+                    destinationVC.asta = selectedAsta
+                    print("\(destinationVC.asta?.key)")
                 }
             default: break
         }

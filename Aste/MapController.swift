@@ -53,7 +53,7 @@ class MapController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowDetail" {
             let detail = segue.destination as! DetailViewController
-            detail.key = (asta?.key)!
+            detail.asta = asta
         }
     }
     
