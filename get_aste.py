@@ -169,9 +169,9 @@ common_set = set_aste - new_set
 changed_set = set()
 for k in common_set:
 	for immobile in aste:
-		if (list(immobile.keys())[0] == k):
+		if list(immobile.keys())[0] == k:
 			item = db.child(k).get().val()
-			if (set(item.values()) != set(list(immobile.values())[0].values())):
+			if set(item.values()) != set(list(immobile.values())[0].values()):
 				changed_set.add(k)
 			break
 
@@ -185,55 +185,57 @@ for k in (removed_set):
 
 for k in (new_set | changed_set):
 	for immobile in aste:
-		if (list(immobile.keys())[0] == k):
+		if list(immobile.keys())[0] == k:
 			url = m_root_url + immobile[k]['Link']
 			dest = os.path.dirname(os.getcwd())
 			call(['wget', '-p', '-q', '-k', '-e robots=off', '-E', '-r', '-l1', '-P' + dest, '-np', '--restrict-file-names=windows', url])
 			download_path = dest + '/' + m_root
 			[os.remove(download_path + '/' + filename) for filename in os.listdir(download_path) if filename.startswith('mappag')]
 			main = [filename for filename in os.listdir(download_path) if filename.startswith('Scheda')]
-			main_file = download_path + '/' + main[0]
-			renamed_file = download_path + '/' + 'main.html'
-			os.rename(main_file, renamed_file)
-			with open(renamed_file, 'r+') as content_file:
-				content = content_file.read()
-				soup = BeautifulSoup(content, 'html.parser')
-				for i in range(2):
-					soup.find('div').decompose()
-				[res.decompose() for res in soup.findAll('div', id='ctl00_pnlMenu')]
-				[res.decompose() for res in soup.findAll('a', {'class': 'ButtonGen'})]
-				[res.decompose() for res in soup.findAll('div', {'class': 'divInfoSheda'})]
-				[res.decompose() for res in soup.findAll('div', id='ctl00_pnlClassic')]
-				[res.decompose() for res in soup.findAll('div', id='ctl00_incContentPlaceHolder_incCtrlScheda_DivPreferito')]
-				[res.decompose() for res in soup.findAll('div', id='messaggioLoggati')]
-				[res.decompose() for res in soup.findAll('a', id='ctl00_incContentPlaceHolder_incCtrlScheda_hlMappa')]
-				content_file.seek(0)
-				content_file.write(str(soup))
-				content_file.truncate()
-				content_file.close()
-			zip_name = k + '.zip'
-			zip_path = dest + '/' + zip_name
-			zipf = zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED)
-			zipdir(download_path, zipf)
-			zipf.close()
-			shutil.rmtree(download_path)
-			storage.child(zip_name).put(zip_path)
-			if k in new_set:
-				db.child(k).set(list(immobile.values())[0])
-				title = 'Nuova Asta'
-				condition = "'aste_new' in topics"
+			if len(main) > 0:
+				main_file = download_path + '/' + main[0]
+				renamed_file = download_path + '/' + 'main.html'
+				os.rename(main_file, renamed_file)
+				with open(renamed_file, 'r+') as content_file:
+					content = content_file.read()
+					soup = BeautifulSoup(content, 'html.parser')
+					for i in range(2):
+						soup.find('div').decompose()
+					[res.decompose() for res in soup.findAll('div', id='ctl00_pnlMenu')]
+					[res.decompose() for res in soup.findAll('a', {'class': 'ButtonGen'})]
+					[res.decompose() for res in soup.findAll('div', {'class': 'divInfoSheda'})]
+					[res.decompose() for res in soup.findAll('div', id='ctl00_pnlClassic')]
+					[res.decompose() for res in soup.findAll('div', id='ctl00_incContentPlaceHolder_incCtrlScheda_DivPreferito')]
+					[res.decompose() for res in soup.findAll('div', id='messaggioLoggati')]
+					[res.decompose() for res in soup.findAll('a', id='ctl00_incContentPlaceHolder_incCtrlScheda_hlMappa')]
+					content_file.seek(0)
+					content_file.write(str(soup))
+					content_file.truncate()
+					content_file.close()
+				zip_name = k + '.zip'
+				zip_path = dest + '/' + zip_name
+				zipf = zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED)
+				zipdir(download_path, zipf)
+				zipf.close()
+				shutil.rmtree(download_path)
+				storage.child(zip_name).put(zip_path)
+				if k in new_set:
+					db.child(k).set(list(immobile.values())[0])
+					title = 'Nuova Asta'
+					condition = "'aste_new' in topics"
+				else:
+					db.child(k).update(list(immobile.values())[0])
+					title = 'Asta Modificata'
+					condition = "'aste_changed' in topics"
+				send_notification(title, k, immobile[k], condition)
 			else:
-				db.child(k).update(list(immobile.values())[0])
-				title = 'Asta Modificata'
-				condition = "'aste_changed' in topics"
-			send_notification(title, k, immobile[k], condition)
-			break
+				print("Errore main html:", k)
 
-if (new_set != set()):
+if new_set != set():
 	print('Nuove:', new_set)
-if (removed_set != set()):
+if removed_set != set():
 	print('Rimosse:', removed_set)
-if (common_set != set()):	
+if common_set != set():
 	print('Comuni:', common_set)
 
 #with open('aste.csv', 'w') as f:  # Just use 'w' mode in 3.x
