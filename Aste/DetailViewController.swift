@@ -11,6 +11,7 @@ import FirebaseStorage
 import FirebaseDatabase
 import SSZipArchive
 import WebKit
+import NHCalendarActivity
 
 class DetailViewController: UIViewController {
 
@@ -20,12 +21,32 @@ class DetailViewController: UIViewController {
     
     @IBAction func share(_ sender: Any) {
         if let asta = asta {
-            let subject = "Asta in " + (asta.childSnapshot(forPath: "Indirizzo").value as! String) + " prezzo: " + TableViewController.formatPrice(value: asta.childSnapshot(forPath: "Prezzo").value)
-            let content = "http://www.astegiudiziarie.it" + (asta.childSnapshot(forPath: "Link").value as! String).replacingOccurrences(of: "Scheda", with: "secondasel").replacingOccurrences(of: "idl", with: "id")
-            let objectsToShare = [content]
-            let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            activityViewController.setValue(subject, forKey: "Subject")
-            present(activityViewController, animated: true, completion: {})
+            if let address = asta.childSnapshot(forPath: "Indirizzo").value as? String {
+                let subject = "Asta in " + address + " prezzo: " + TableViewController.formatPrice(value: asta.childSnapshot(forPath: "Prezzo").value)
+                let content = "http://www.astegiudiziarie.it" + (asta.childSnapshot(forPath: "Link").value as! String).replacingOccurrences(of: "Scheda", with: "secondasel").replacingOccurrences(of: "idl", with: "id")
+                var objectsToShare: [Any] = [content]
+                var applicationActivities: [UIActivity] = []
+                var calendarActivity: NHCalendarActivity? = nil
+                if let dateString = (asta.childSnapshot(forPath: "Data").value as? String)?.replacingOccurrences(of: "ore ", with: "") {
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "d MMMM y HH.mm"
+                    dateFormatter.locale = NSLocale(localeIdentifier: "it-IT") as Locale!
+                    let date = dateFormatter.date(from: dateString)
+                    let calendarEvent = NHCalendarEvent()
+                    calendarEvent.title = subject;
+                    calendarEvent.notes = content;
+                    calendarEvent.startDate = date;
+                    calendarEvent.endDate = date?.addingTimeInterval(1*60*60);
+                    calendarEvent.allDay = false;
+                    objectsToShare.append(calendarEvent)
+                    calendarActivity = NHCalendarActivity()
+                    applicationActivities.append(calendarActivity!)
+                    //applicationActivities?.append(NHCalendarActivity())
+                }
+                let activityViewController = UIActivityViewController(activityItems: objectsToShare, applicationActivities: applicationActivities)
+                activityViewController.setValue(subject, forKey: "Subject")
+                present(activityViewController, animated: true, completion: {})
+            }
         }
     }
     
@@ -82,6 +103,16 @@ class DetailViewController: UIViewController {
         present(activityViewController, animated: true, completion: {})
     }
     
+    func createCalendarEvent() -> NHCalendarEvent {
+        let calendarEvent = NHCalendarEvent()
+        calendarEvent.title = "Long-expected Party";
+        calendarEvent.location = "The Shire";
+        calendarEvent.notes = "Bilbo's eleventy-first birthday.";
+        //calendarEvent.startDate = [NSDate dateWithTimeIntervalSinceNow:3600];
+        //calendarEvent.endDate = [NSDate dateWithTimeInterval:3600 sinceDate:calendarEvent.startDate];
+        //calendarEvent.allDay = NO;
+        return calendarEvent;
+    }
 
     /*
     // MARK: - Navigation

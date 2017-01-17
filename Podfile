@@ -10,5 +10,6 @@ target 'Aste' do
     pod 'Firebase/Storage'
     pod 'SSZipArchive'
     pod 'Firebase/Auth'
+    pod 'NHCalendarActivity', '~> 0.0.1'
 end
 

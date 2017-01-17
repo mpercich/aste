@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '7F2E0A8E2036F2CA6B1203359C61D6A4'
-               BlueprintName = 'SSZipArchive'
+               BlueprintIdentifier = '2914EC16ABB3DD93765D65ACD6F79A71'
+               BlueprintName = 'NHCalendarActivity'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'SSZipArchive.framework'>
+               BuildableName = 'NHCalendarActivity.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
