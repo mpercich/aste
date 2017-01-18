@@ -52,6 +52,7 @@ class TableViewController: UITableViewController {
             self.aste.sort{$0.childSnapshot(forPath: "Prezzo").value as! Int > $1.childSnapshot(forPath: "Prezzo").value as! Int}
             self.tableView.reloadData()
             self.scroll()
+            self.setObservers()
         })
     }
     
@@ -62,7 +63,6 @@ class TableViewController: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setObservers()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
