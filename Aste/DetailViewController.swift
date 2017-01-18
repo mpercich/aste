@@ -19,6 +19,7 @@ class DetailViewController: UIViewController {
     
     var webView: WKWebView!
     var asta: FIRDataSnapshot?
+    var eventStore: EKEventStore!
     
     @IBAction func share(_ sender: Any) {
         if let asta = asta {
@@ -32,9 +33,19 @@ class DetailViewController: UIViewController {
                     dateFormatter.dateFormat = "d MMMM y HH.mm"
                     dateFormatter.locale = NSLocale(localeIdentifier: "it-IT") as Locale!
                     if let date = dateFormatter.date(from: dateString) {
+                        eventStore = EKEventStore()
+                        eventStore.requestAccess(to: EKEntityType.event, completion: {
+                            granted, error in
+                            if granted {
+                                print("Got access")
+                            } else {
+                                print("The app is not permitted to access reminders, make sure to grant permission in the settings and try again")
+                            }
+                        })
                         let calendarEvent = createCalendarEvent(title: subject, address: address, notes: content, startDate: date, endDate: date.addingTimeInterval(1*60*60), allDay: false)
                         objectsToShare.append(calendarEvent)
                         let calendarActivity = NHCalendarActivity()
+                        calendarActivity.delegate = self
                         applicationActivities.append(calendarActivity)
                     }
                 }
@@ -159,31 +170,34 @@ extension DetailViewController: WKNavigationDelegate {
 extension DetailViewController: NHCalendarActivityDelegate {
     
     func calendarActivityDidFinish(_ event: NHCalendarEvent) {
-        let store = EKEventStore()
-        store.requestAccess(to: EKEntityType.event, completion: {
-            granted, error in
-            if granted {
-                print("Got access")
-            } else {
-                print("The app is not permitted to access reminders, make sure to grant permission in the settings and try again")
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
+            //let store = EKEventStore()
+            let store = self.eventStore!
+            store.requestAccess(to: EKEntityType.event, completion: {
+                granted, error in
+                if granted {
+                    print("Got access")
+                } else {
+                    print("The app is not permitted to access reminders, make sure to grant permission in the settings and try again")
+                }
+            })
+            let calendar = store.defaultCalendarForNewEvents
+            let alert = UIAlertController(title: "New Event", message: "Event added to calendar \(calendar.title): \(event.title!)\nDo you want to edit it?", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction!) in
+                // Use an event store instance to create and properly configure an NSPredicate
+                let eventsPredicate = store.predicateForEvents(withStart: event.startDate, end: event.endDate, calendars: [calendar])
+                // Use the configured NSPredicate to find and return events in the store that match
+                let events = store.events(matching: eventsPredicate)
+                let eventController = EKEventEditViewController()
+                let thisEvent = events[0] as EKEvent
+                eventController.event = thisEvent
+                eventController.editViewDelegate = self
+                self.present(eventController, animated: true, completion: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            print("Event created from \(event.startDate) to \(event.endDate)")
         })
-        let calendar = store.defaultCalendarForNewEvents
-        let alert = UIAlertController(title: "New Event", message: "Event added to calendar \(calendar.title): \(event.title!)\nDo you want to edit it?", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction!) in
-            // Use an event store instance to create and properly configure an NSPredicate
-            let eventsPredicate = store.predicateForEvents(withStart: event.startDate, end: event.endDate, calendars: [calendar])
-            // Use the configured NSPredicate to find and return events in the store that match
-            let events = store.events(matching: eventsPredicate)
-            let eventController = EKEventEditViewController()
-            let thisEvent = events[0] as EKEvent
-            eventController.event = thisEvent
-            eventController.editViewDelegate = self
-            self.present(eventController, animated: true, completion: nil)
-        }))
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-        print("Event created from \(event.startDate) to \(event.endDate)")
     }
     
     func calendarActivityDidFail(_ event: NHCalendarEvent!, withError error: Error!) {
