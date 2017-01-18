@@ -12,6 +12,7 @@ import FirebaseDatabase
 import SSZipArchive
 import WebKit
 import NHCalendarActivity
+import EventKitUI
 
 class DetailViewController: UIViewController {
 
@@ -151,5 +152,71 @@ extension DetailViewController: WKNavigationDelegate {
         }
         decisionHandler(.allow)
         return
+    }
+}
+
+// MARK: - NHCalendarActivityDelegate
+extension DetailViewController: NHCalendarActivityDelegate {
+    
+    func calendarActivityDidFinish(_ event: NHCalendarEvent) {
+        let store = EKEventStore()
+        store.requestAccess(to: EKEntityType.event, completion: {
+            granted, error in
+            if granted {
+                print("Got access")
+            } else {
+                print("The app is not permitted to access reminders, make sure to grant permission in the settings and try again")
+            }
+        })
+        let calendar = store.defaultCalendarForNewEvents
+        let alert = UIAlertController(title: "New Event", message: "Event added to calendar \(calendar.title): \(event.title!)\nDo you want to edit it?", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction!) in
+            // Use an event store instance to create and properly configure an NSPredicate
+            let eventsPredicate = store.predicateForEvents(withStart: event.startDate, end: event.endDate, calendars: [calendar])
+            // Use the configured NSPredicate to find and return events in the store that match
+            let events = store.events(matching: eventsPredicate)
+            let eventController = EKEventEditViewController()
+            let thisEvent = events[0] as EKEvent
+            eventController.event = thisEvent
+            eventController.editViewDelegate = self
+            self.present(eventController, animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        print("Event created from \(event.startDate) to \(event.endDate)")
+    }
+    
+    func calendarActivityDidFail(_ event: NHCalendarEvent!, withError error: Error!) {
+        print("calendarActivityDidFail: \(error.localizedDescription)")
+    }
+    
+    func calendarActivityDidFailWithError(_ error: Error!) {
+        print("calendarActivityDidFailWithError: \(error.localizedDescription)")
+    }
+}
+
+// MARK: - EKEventEditViewDelegate
+extension DetailViewController: EKEventEditViewDelegate {
+
+    func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
+        switch (action) {
+            case .saved:
+                do {
+                    try controller.eventStore.save(controller.event!, span: .futureEvents)
+                }
+                catch {
+                    print("EKEventEditViewAction .saved failed!")
+                }
+            case .deleted:
+                do {
+                    try controller.eventStore.remove(controller.event!, span: .futureEvents)
+                }
+                catch {
+                    print("EKEventEditViewAction .delete failed!")
+                }
+            default:
+                break
+        }
+        self.dismiss(animated: true, completion: nil)
     }
 }
