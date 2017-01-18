@@ -116,7 +116,8 @@
                 [ekEventStore saveEvent:ekEvent
                                    span:EKSpanThisEvent
                                   error:&error];
-                
+                NSError *commitError;
+                [ekEventStore commit:&commitError];
                 if (error == nil) {
                     if ([self.delegate respondsToSelector:@selector(calendarActivityDidFinish:)])
                         [self.delegate calendarActivityDidFinish:event];

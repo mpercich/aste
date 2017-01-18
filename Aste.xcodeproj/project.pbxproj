@@ -40,8 +40,6 @@
 		D15BEC631DD2608C00E58050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D15BEC661DD2608C00E58050 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D15BEC681DD2608C00E58050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D172CC2F1E2AD4B00050695E /* libSSZipArchive.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSSZipArchive.a; path = "../../../Library/Developer/Xcode/DerivedData/Aste-efaluxqkpxkkdwaojgcnasxllxpb/Build/Products/Debug-iphonesimulator/SSZipArchive/libSSZipArchive.a"; sourceTree = "<group>"; };
-		D172CC331E2AE5AE0050695E /* NHCalendarActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NHCalendarActivity.framework; path = "../../../Library/Developer/Xcode/DerivedData/Aste-efaluxqkpxkkdwaojgcnasxllxpb/Build/Products/Debug-iphoneos/NHCalendarActivity/NHCalendarActivity.framework"; sourceTree = "<group>"; };
 		D172CC3D1E2AFA7C0050695E /* NHCalendarActivityIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NHCalendarActivityIcon.png; sourceTree = "<group>"; };
 		D172CC3E1E2AFA7C0050695E /* NHCalendarActivityIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NHCalendarActivityIcon@2x.png"; sourceTree = "<group>"; };
 		D172CC3F1E2AFA7C0050695E /* NHCalendarActivityIcon@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NHCalendarActivityIcon@2x~ipad.png"; sourceTree = "<group>"; };
@@ -133,8 +131,6 @@
 			isa = PBXGroup;
 			children = (
 				D1460D731E2B02C6004662AC /* EventKitUI.framework */,
-				D172CC331E2AE5AE0050695E /* NHCalendarActivity.framework */,
-				D172CC2F1E2AD4B00050695E /* libSSZipArchive.a */,
 				D1DA4A0B1DE7B18E00C6A060 /* MapKit.framework */,
 				5AAD88D8A0310D83F3B6555A /* Pods_Aste.framework */,
 			);
