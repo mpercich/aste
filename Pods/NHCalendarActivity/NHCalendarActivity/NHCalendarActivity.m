@@ -85,8 +85,7 @@
 
 - (void)performActivity
 {
-    //EKEventStore *ekEventStore = [[EKEventStore alloc] init];
-    EKEventStore *ekEventStore = self.delegate.eventStore
+    EKEventStore *ekEventStore = [[EKEventStore alloc] init];
     
     [ekEventStore requestAccessToEntityType:EKEntityTypeEvent
                                  completion:^(BOOL granted, NSError *kError)
@@ -114,10 +113,9 @@
 //                eventViewController.allowsEditing = YES;
 
                 NSError *error = nil;
-                [ekEventStore saveEvent:ekEvent span:EKSpanThisEvent commit:YES error:&error];
-                //[ekEventStore saveEvent:ekEvent
-                //                  span:EKSpanThisEvent
-                //                  error:&error];
+                [ekEventStore saveEvent:ekEvent
+                                   span:EKSpanThisEvent
+                                  error:&error];
                 
                 if (error == nil) {
                     if ([self.delegate respondsToSelector:@selector(calendarActivityDidFinish:)])
