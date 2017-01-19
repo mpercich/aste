@@ -95,12 +95,12 @@ class TableViewController: UITableViewController {
     
     func scroll() {
         if let row = rowToScroll {
-            let index = indexByKey(key: row)
-            let indexPath = IndexPath(row: index, section: 0)
-            removeRead(at: indexPath)
-            //tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
-            tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
-            rowToScroll = nil
+            if let index = indexByKey(key: row) {
+                let indexPath = IndexPath(row: index, section: 0)
+                removeRead(at: indexPath)                
+                tableView.scrollToRow(at: indexPath, at: UITableViewScrollPosition.middle, animated: true)
+                rowToScroll = nil
+            }
         }
     }
     
@@ -121,7 +121,7 @@ class TableViewController: UITableViewController {
         return nil
     }
     
-    func indexByKey(key: String) -> Int {
+    func indexByKey(key: String) -> Int? {
         var index = 0
         for asta in aste {
             if asta.key == key {
@@ -129,7 +129,7 @@ class TableViewController: UITableViewController {
             }
             index += 1
         }
-        return 0
+        return nil
     }
     
     func indexBySnapshotPrice(snapshot: FIRDataSnapshot) -> Int {
