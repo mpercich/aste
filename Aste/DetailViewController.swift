@@ -19,6 +19,7 @@ class DetailViewController: UIViewController {
     
     var webView: WKWebView!
     var asta: FIRDataSnapshot?
+    var eventStore: EKEventStore!
     
     @IBAction func share(_ sender: Any) {
         if let asta = asta {
@@ -32,7 +33,7 @@ class DetailViewController: UIViewController {
                     dateFormatter.dateFormat = "d MMMM y HH.mm"
                     dateFormatter.locale = NSLocale(localeIdentifier: "it-IT") as Locale!
                     if let date = dateFormatter.date(from: dateString) {
-                        let eventStore = EKEventStore()
+                        eventStore = EKEventStore()
                         eventStore.requestAccess(to: EKEntityType.event, completion: {
                             granted, error in
                             if granted {
@@ -115,7 +116,7 @@ class DetailViewController: UIViewController {
         calendarEvent.startDate = startDate
         calendarEvent.endDate = endDate
         calendarEvent.allDay = allDay;
-        calendarEvent.alarms = [EKAlarm(relativeOffset: 0)]
+        calendarEvent.alarms = [EKAlarm(relativeOffset: 0), EKAlarm(relativeOffset: -86400*3)]
         return calendarEvent;
     }
     /*
@@ -170,17 +171,16 @@ extension DetailViewController: WKNavigationDelegate {
 extension DetailViewController: NHCalendarActivityDelegate {
     
     func calendarActivityDidFinish(_ event: NHCalendarEvent) {
-        let store = EKEventStore()
-        let calendar = store.defaultCalendarForNewEvents
+        let calendar = eventStore.defaultCalendarForNewEvents
         let alert = UIAlertController(title: "New Event", message: "Event added to calendar \(calendar.title): \(event.title!)\nDo you want to edit it?", preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction!) in
             // Use an event store instance to create and properly configure an NSPredicate
-            let eventsPredicate = store.predicateForEvents(withStart: event.startDate, end: event.endDate, calendars: [calendar])
+            let eventsPredicate = self.eventStore.predicateForEvents(withStart: event.startDate, end: event.endDate, calendars: [calendar])
             // Use the configured NSPredicate to find and return events in the store that match
-            let events = store.events(matching: eventsPredicate)
+            let events = self.eventStore.events(matching: eventsPredicate)
             let eventController = EKEventEditViewController()
             eventController.event = events[0]
-            eventController.eventStore = store
+            eventController.eventStore = self.eventStore
             eventController.editViewDelegate = self
             self.present(eventController, animated: true, completion: nil)
         }))
