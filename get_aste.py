@@ -91,8 +91,10 @@ def grab(parameters, list):
 			else:
 				print(temp[keys.index('Codice')], 'no geocode:', found.group(1))
 				temp.append(found.group(1))
+				temp += ['']
 		else:
 			print(temp[keys.index('Codice')], 'indirizzo non trovato:', temp[keys.index('Descrizione')])
+			temp += ['', '']
 		for x, tag in enumerate(temp):
 			#print(keys[x], tag)
 			if x == 0:
@@ -172,6 +174,7 @@ for k in common_set:
 		if list(immobile.keys())[0] == k:
 			item = db.child(k).get().val()
 			if set(item.values()) != set(list(immobile.values())[0].values()):
+				#print(set(item.values()), 'diverso da', set(list(immobile.values())[0].values()), 'differenza 1', set(item.values()).difference(set(list(immobile.values())[0].values())), 'differenza 2', set(list(immobile.values())[0].values()).difference(set(item.values())))
 				changed_set.add(k)
 			break
 
