@@ -41,8 +41,6 @@
 		D172CC3E1E2AFA7C0050695E /* NHCalendarActivityIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NHCalendarActivityIcon@2x.png"; sourceTree = "<group>"; };
 		D172CC3F1E2AFA7C0050695E /* NHCalendarActivityIcon@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NHCalendarActivityIcon@2x~ipad.png"; sourceTree = "<group>"; };
 		D172CC401E2AFA7C0050695E /* NHCalendarActivityIcon~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NHCalendarActivityIcon~ipad.png"; sourceTree = "<group>"; };
-		D193287F1E0313EA00FC3FEB /* serviceAccountKey.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = serviceAccountKey.json; sourceTree = "<group>"; };
-		D19624A41E0339E7003A5CEF /* token.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = token.txt; sourceTree = "<group>"; };
 		D1DA4A071DE6268300C6A060 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		D1DA4A091DE7759A00C6A060 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		D1DA4A0B1DE7B18E00C6A060 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -71,19 +69,9 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		49E076A81DE6E18300384A49 /* Scripts */ = {
-			isa = PBXGroup;
-			children = (
-				D193287F1E0313EA00FC3FEB /* serviceAccountKey.json */,
-				D19624A41E0339E7003A5CEF /* token.txt */,
-			);
-			name = Scripts;
-			sourceTree = "<group>";
-		};
 		D15BEC501DD2608B00E58050 = {
 			isa = PBXGroup;
 			children = (
-				49E076A81DE6E18300384A49 /* Scripts */,
 				D15BEC5B1DD2608C00E58050 /* Aste */,
 				D15BEC5A1DD2608C00E58050 /* Products */,
 				09A09251967ED59F87EB192B /* Pods */,
