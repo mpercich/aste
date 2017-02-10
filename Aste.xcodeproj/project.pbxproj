@@ -27,7 +27,6 @@
 /* Begin PBXFileReference section */
 		44CDB641A92EB8FD714887FB /* Pods-Aste.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Aste.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Aste/Pods-Aste.debug.xcconfig"; sourceTree = "<group>"; };
 		4914A74D1E16911E0086B1C3 /* CustomNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
-		49E076A91DE6E1A800384A49 /* get_aste.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = get_aste.py; sourceTree = "<group>"; usesTabs = 1; };
 		D11C37271DE8DF7700BAF846 /* Aste.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Aste.entitlements; sourceTree = "<group>"; };
 		D1289DE31DFCE11900ECBEA5 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		D1460D731E2B02C6004662AC /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
@@ -76,7 +75,6 @@
 			isa = PBXGroup;
 			children = (
 				D193287F1E0313EA00FC3FEB /* serviceAccountKey.json */,
-				49E076A91DE6E1A800384A49 /* get_aste.py */,
 				D19624A41E0339E7003A5CEF /* token.txt */,
 			);
 			name = Scripts;
