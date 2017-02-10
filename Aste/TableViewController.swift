@@ -186,7 +186,7 @@ class TableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         selectedAsta = aste[indexPath.row]
         var segueIdentifier: String
-        if selectedAsta?.childSnapshot(forPath: "Coordinate").value as? String != nil  {
+        if selectedAsta?.childSnapshot(forPath: "Coordinate").value as! String != ""  {
             segueIdentifier = "ShowMap"
         } else {
             segueIdentifier = "ShowDetail"

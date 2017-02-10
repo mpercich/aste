@@ -81,15 +81,17 @@ extension MapController: CLLocationManagerDelegate {
             mapView.showsUserLocation = true
             if let assumedCoordinates = coordinates {
                 var coordinatesArr = assumedCoordinates.components(separatedBy: ",")
-                let latitude = Double(coordinatesArr[0])
-                let longitude = Double(coordinatesArr[1])
-                let astaLocation = CLLocation(latitude: latitude!, longitude: longitude!)
-                centerMapOnLocation(userLocation: userLocation, location: astaLocation)
-                let dropPin = MKPointAnnotation()
-                dropPin.coordinate = astaLocation.coordinate
-                dropPin.subtitle = address
-                dropPin.title = price
-                mapView.addAnnotation(dropPin)
+                if coordinatesArr.count == 2 {
+                    let latitude = Double(coordinatesArr[0])
+                    let longitude = Double(coordinatesArr[1])
+                    let astaLocation = CLLocation(latitude: latitude!, longitude: longitude!)
+                    centerMapOnLocation(userLocation: userLocation, location: astaLocation)
+                    let dropPin = MKPointAnnotation()
+                    dropPin.coordinate = astaLocation.coordinate
+                    dropPin.subtitle = address
+                    dropPin.title = price
+                    mapView.addAnnotation(dropPin)
+                }
             }
         }
     }
