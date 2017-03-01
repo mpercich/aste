@@ -25,7 +25,7 @@ class DetailViewController: UIViewController {
         if let asta = asta {
             if let address = asta.childSnapshot(forPath: "Indirizzo").value as? String {
                 let subject = "Asta in " + address + " prezzo: " + TableViewController.formatPrice(value: asta.childSnapshot(forPath: "Prezzo").value)
-                let content = "http://www.astegiudiziarie.it" + (asta.childSnapshot(forPath: "Link").value as! String).replacingOccurrences(of: "Scheda", with: "secondasel").replacingOccurrences(of: "idl", with: "id")
+                let content = "http://www.astegiudiziarie.it/" + (asta.childSnapshot(forPath: "Link").value as! String).replacingOccurrences(of: "Scheda", with: "secondasel").replacingOccurrences(of: "idl", with: "id")
                 var objectsToShare: [Any] = [content]
                 var applicationActivities: [UIActivity] = []
                 if let dateString = (asta.childSnapshot(forPath: "Data").value as? String)?.replacingOccurrences(of: "ore ", with: "") {
