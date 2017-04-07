@@ -18,8 +18,10 @@ class TableViewController: UITableViewController {
     var selectedAsta: FIRDataSnapshot?
     var rowToScroll: String?
     var read: Array<String> = []
+    var deleted: Array<String> = []
     lazy var hideRead: Bool =  UserDefaults.standard.bool(forKey: "HideRead")
     let cellHeight: CGFloat = 132;
+    let redColor = UIColor.red.withAlphaComponent(0.1).cgColor
     
     @IBAction func leftButtonClicked(_ sender: UIBarButtonItem) {
         hideRead = !hideRead
@@ -33,7 +35,6 @@ class TableViewController: UITableViewController {
     }
     
     override func viewDidLoad() {
-        print("viewDidLoad")
         super.viewDidLoad()
         if hideRead {
             navigationItem.leftBarButtonItem?.title = "Show All"
@@ -42,6 +43,9 @@ class TableViewController: UITableViewController {
         }
         if let readUnwrapped = UserDefaults.standard.object(forKey: "Read") {
             read = readUnwrapped as! Array<String>
+        }
+        if let deletedUnwrapped = UserDefaults.standard.object(forKey: "Deleted") {
+            deleted = deletedUnwrapped as! Array<String>
         }
         FIRDatabase.database().persistenceEnabled = true
         asteQuery.keepSynced(true)
@@ -151,24 +155,18 @@ class TableViewController: UITableViewController {
     func cellSwipped(sender: UISwipeGestureRecognizer) {
         let swipeLocation = sender.location(in: tableView)
         let indexPath = tableView.indexPathForRow(at: swipeLocation)
-        let cell = tableView.cellForRow(at: indexPath!)
+        let cell = tableView.cellForRow(at: indexPath!)!
         switch sender.direction {
-        case UISwipeGestureRecognizerDirection.right:
-            cell?.contentView.layer.opacity = 1
-            if let indexPathUnwrapped = indexPath {
-                removeRead(at: indexPathUnwrapped)
-            }
-        case UISwipeGestureRecognizerDirection.left:
-            cell?.contentView.layer.opacity = 0.5
-            if let row = indexPath?.row {
-                if !read.contains(aste[row].key) {
-                    read.append(aste[row].key)
-                    UserDefaults.standard.set(read, forKey: "Read")
-                    tableView.reloadRows(at: [indexPath!], with: UITableViewRowAnimation.automatic)
+            case UISwipeGestureRecognizerDirection.right:
+                cell.contentView.layer.opacity = 1
+                cell.contentView.layer.backgroundColor = UIColor.white.cgColor
+                if let indexPathUnwrapped = indexPath {
+                    removeRead(at: indexPathUnwrapped)
+                    removeDeleted(at: indexPathUnwrapped)
+                    tableView.reloadRows(at: [indexPathUnwrapped], with: UITableViewRowAnimation.automatic)
                 }
-            }
-        default:
-            break
+            default:
+                break
         }
         
     }
@@ -177,6 +175,13 @@ class TableViewController: UITableViewController {
         if let index = read.index(of: aste[(at.row)].key) {
             read.remove(at: index)
             UserDefaults.standard.set(read, forKey: "Read")
+        }
+    }
+    
+    func removeDeleted(at: IndexPath) {
+        if let index = deleted.index(of: aste[(at.row)].key) {
+            deleted.remove(at: index)
+            UserDefaults.standard.set(deleted, forKey: "Deleted")
         }
     }
 
@@ -253,32 +258,63 @@ class TableViewController: UITableViewController {
         cell.sale.text = aste[indexPath.row].childSnapshot(forPath: "Vendita").value as? String
         cell.address.text = aste[indexPath.row].childSnapshot(forPath: "Indirizzo").value as? String
         cell.attachment.text = aste[indexPath.row].childSnapshot(forPath: "Allegati").value as? String
-        var swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
-        cell.addGestureRecognizer(swipeGesture)
-        swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
-        swipeGesture.direction = UISwipeGestureRecognizerDirection.left
+        let swipeGesture = UISwipeGestureRecognizer.init(target: self, action: #selector(cellSwipped(sender:)))
         cell.addGestureRecognizer(swipeGesture)
         cell.contentView.layer.opacity = 1
+        cell.contentView.layer.backgroundColor = UIColor.white.cgColor
         if read.contains(aste[indexPath.row].key) {
             cell.contentView.layer.opacity = 0.5
+        }
+        if deleted.contains(aste[indexPath.row].key) {
+            cell.contentView.layer.opacity = 0.5
+            cell.contentView.layer.backgroundColor = redColor
         }
         return cell
     }    
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if hideRead && read.index(of: aste[(indexPath.row)].key) != nil {
+        if hideRead && (read.index(of: aste[(indexPath.row)].key) != nil || deleted.index(of: aste[(indexPath.row)].key) != nil) {
             return 0;
         }
         return cellHeight;
     }
     
-    /*
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let hideRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Hide", handler:{action, indexpath in
+                if let cell = tableView.cellForRow(at: indexPath) {
+                    cell.contentView.layer.opacity = 0.5
+                }
+                let row = indexPath.row
+                if !self.read.contains(self.aste[row].key) {
+                    self.read.append(self.aste[row].key)
+                    UserDefaults.standard.set(self.read, forKey: "Read")
+                    tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+                }
+        });
+        hideRowAction.backgroundColor = UIColor.lightGray;
+        let deleteRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Delete", handler:{action, indexpath in
+                if let cell = tableView.cellForRow(at: indexPath) {
+                    cell.contentView.layer.opacity = 0.5
+                    cell.contentView.layer.backgroundColor = self.redColor
+                }
+                let row = indexPath.row
+                if !self.deleted.contains(self.aste[row].key) {
+                    self.deleted.append(self.aste[row].key)
+                    UserDefaults.standard.set(self.deleted, forKey: "Deleted")
+                    tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+                }
+        });
+        
+        return [deleteRowAction, hideRowAction];
+    }
+    
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-    */
+
 
     /*
     // Override to support editing the table view.

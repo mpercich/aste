@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "1D155218B982C885FEDB2A25F500640B2D2B4924",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "F004D171459D930FDA060AD3B8C1C860FA4E62CE" : 9223372036854775807,
+    "1D155218B982C885FEDB2A25F500640B2D2B4924" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "95E60D70-263E-46F4-9A2B-1E09218B7002",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "F004D171459D930FDA060AD3B8C1C860FA4E62CE" : "Aste\/Scripts\/",
+    "1D155218B982C885FEDB2A25F500640B2D2B4924" : "Aste\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Aste",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Aste.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mpercich\/aste.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1D155218B982C885FEDB2A25F500640B2D2B4924"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/git.heroku.com\/fathomless-plains-72967.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F004D171459D930FDA060AD3B8C1C860FA4E62CE"
+    }
+  ]
+}
